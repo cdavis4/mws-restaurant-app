@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
     <meta charset="utf-8">
@@ -14,20 +14,24 @@
 <body>
   <header>
     <nav>
-      <h1>Restaurant Reviews</h1>
+      <h1 tabindex="1">Restaurant Reviews</h1>          
     </nav>
   </header>
   <main id="maincontent">
-    <section id="map-container" aria-labelledby="Google map locations" role="application">
+    <label for="map-container" class='visuallyhidden'>Google Map with Restaurant Markers</label>
+    <section id="map-container" aria-labelledby="map-container" role="application">
       <div id="map"></div>
     </section>
   
       <section class="filter-options">
         <h2>Filter Results</h2>
-        <select id="neighborhoods-select" aria-labelledby="Filter restaurants by neighborhood" role="searchbox" name="neighborhoods" onchange="updateRestaurants()">
+
+        <label for="neighborhoods-select" class='visuallyhidden'>Restaurants Filtered by Neighborhoods</label>
+        <select id="neighborhoods-select" aria-labelledby="neighborhoods-select" role="searchbox" name="neighborhoods" onchange="updateRestaurants()">
           <option value="all">All Neighborhoods</option>
         </select>
-        <select id="cuisines-select" aria-labelledby="Filter restaurants by cuisine" role="searchbox" name="cuisines" onchange="updateRestaurants()">
+        <label for="cuisines-select" class='visuallyhidden'>Restaurants Filtered by Cuisine Type</label>
+        <select id="cuisines-select" aria-labelledby="cuisines-select" role="searchbox" name="cuisines" onchange="updateRestaurants()">
           <option value="all">All Cuisines</option>
         </select>
       </section>
