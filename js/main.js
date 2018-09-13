@@ -192,11 +192,12 @@ createRestaurantHTML = (restaurant) => {
   });
 
   /**
- * Add markers for current restaurants to the map.
+ * Add attributes for View Details button
  */
   more.setAttribute("class", "button");
   more.setAttribute("role", "button");
-  li.append(more)
+  more.setAttribute("aria-label", "View details of the restaurant "+restaurant.name);
+  li.append(more);
 
   return li
 }

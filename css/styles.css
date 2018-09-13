@@ -35,6 +35,14 @@ h1, h2, h3, h4, h5, h6 {
 article, aside, canvas, details, figcaption, figure, footer, header, hgroup, menu, nav, section {
 	display: block;
 }
+.visuallyhidden { 
+  position: absolute; 
+  overflow: hidden; 
+  clip: rect(1px 1px 1px 1px); /* IE6, IE7 */
+  clip: rect(1px, 1px, 1px, 1px);
+  height: 1px; width: 1px; 
+ 
+}
 #maincontent {
   background-color: #f3f3f3;
   max-height: 100%;
