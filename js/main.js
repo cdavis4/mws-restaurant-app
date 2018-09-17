@@ -165,10 +165,12 @@ createRestaurantHTML = (restaurant) => {
   /**
  * add alt and srcset
  */
-  image.alt = restaurant.alt;
-  image.srcset = "/img/"+ restaurant.photographSmall1x + " 200w, /img/"
-   + restaurant.photograph + " 400w, /img/" +restaurant.photographLg1x + 
-   " 1000w, /img/" + restaurant.photographLg2x + " 4000w";
+ // added alt attribute and srcset
+
+ image.alt = "photo from restaurant " + restaurant.name;
+
+ image.srcset = "/img/"+ restaurant.id + "-300_1x.jpg 400w, /img/" 
+ +restaurant.id + "-600_1x.jpg 1000w, /img/" + restaurant.id  + "-600_2x.jpg 4000w";
 
   li.append(image);
 
