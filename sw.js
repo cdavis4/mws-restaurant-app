@@ -89,7 +89,6 @@ self.addEventListener('activate', function(event) {
 
 self.addEventListener('fetch', function (event) {
   if(event.request.url === DBHelper.DATABASE_URL){
-    console.log("using idb"),
   idb.open('restaurant_info', 1).then(function(db) {
       var tx = db.transaction(['restaurants'], 'readonly');
       var store = tx.objectStore('restaurants');
