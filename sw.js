@@ -88,10 +88,24 @@ self.addEventListener('activate', function(event) {
 
 
 self.addEventListener('fetch', function (event) {
+  if(event.request.url === DBHelper.DATABASE_URL){
+    console.log("using idb"),
+  idb.open('restaurant_info', 1).then(function(db) {
+      var tx = db.transaction(['restaurants'], 'readonly');
+      var store = tx.objectStore('restaurants');
+      return store.getAll()
+      .then(items => {
+      // Use restaurant data
+        return items;
+      })
+    });
+  }
+  else{
     event.respondWith(caches.match(event.request).then(function (response) {
       //if (response ) console.log('Found in cache!', event.request.url);
       return response || fetch(event.request);
     }));
     return;
+    }
 });
 
