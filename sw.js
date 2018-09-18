@@ -1,50 +1,43 @@
 if (typeof idb === "undefined") {
- self.importScripts('js/idb.js');
-}
+  self.importScripts('js/idb.js');
+ }
+//augmented code to use keyval source: https://github.com/jakearchibald/idb-keyval
+ //source: https://james-priest.github.io/mws-restaurant-stage-1/stage2.html
+const staticCacheName = 'restaurant-static'; 
 
-if (typeof DBHelper === "undefined") {
-  self.importScripts('js/dbhelper.js');
-}
-/**
- * cache names
- */
-var staticCacheName = 'restaurant-review-static';
-var contentImgsCache = 'restaurant-review-imgs';
-var allCaches = [
-    staticCacheName,
-    contentImgsCache
-];
+const dbPromise = idb.open('restaurant_info', 1, upgradeDB => {
+  switch (upgradeDB.oldVersion) {
+    case 0:
+      upgradeDB.createObjectStore('restaurants');
+  }
+});
 
-/**
- * combine create and add
- */
-function storeJSONLocal(){
-  fetch(DBHelper.DATABASE_URL)
-   .then(response => response.json())
-   .then(data =>{
-    //open indexDB database and add data in this then
-    idb.open('restaurant_info', 1, function(upgradeDB) {
-      var store = upgradeDB.createObjectStore('restaurants', {
-        keyPath: 'id'
-      });
-      //addJSON(store); // Fails here
-   //store.put({id: 1, name: "name"});
- // for(i=0; i < data.length; i++){
-   data.forEach(function(item){
-    store.put(item);
-    //  store.put({id:data[i].id,name: data[i].name});
-    //  console.log(item); //test to see if this works
+// IndexedDB object with get & set methods 
+// https://github.com/jakearchibald/idb
+const idbKeyVal = {
+  get(key) {
+    return dbPromise.then(db => {
+      return db
+        .transaction('restaurants')
+        .objectStore('restaurants')
+        .get(key);
     });
-  });
-  });
-}
+  },
+  set(key, val) {
+    return dbPromise.then(db => {
+      const store = db.transaction('restaurants', 'readwrite');
+      store.objectStore('restaurants').put(val, key);
+      return store.complete;
+    });
+  }
+};
 
-
-
-//install service worker
-self.addEventListener('install', function(event) {
-    event.waitUntil(
-      caches.open(staticCacheName).then(function(cache) {
+// list of assets to cache on install
+// cache each restaurant detail page as well
+self.addEventListener('install', event => {
+  event.waitUntil(
+    caches.open(staticCacheName)
+      .then(cache => {
         return cache.addAll([
           '/',
           '/css/styles.css',
@@ -62,26 +55,81 @@ self.addEventListener('install', function(event) {
           'https://unpkg.com/leaflet@1.3.1/dist/images/marker-shadow.png',
           'https://unpkg.com/leaflet@1.3.1/dist/images/marker-icon.png',
           'https://unpkg.com/leaflet@1.3.1/dist/images/marker-icon-2x.png',
-          'https://api.tiles.mapbox.com/v4/mapbox.streets/13/2413/3080.jpg70?access_token=pk.eyJ1IjoiY2RhdmlzNCIsImEiOiJjamxpOHVvNnIwYjJnM3ByMjFwcW9jdjk5In0.WrX96W6zbl7Vo3Y8A2Vvfw'
-        ]);
-    })
+          'https://api.tiles.mapbox.com/v4/mapbox.streets/13/2413/3080.jpg70?access_token=pk.eyJ1IjoiY2RhdmlzNCIsImEiOiJjamxpOHVvNnIwYjJnM3ByMjFwcW9jdjk5In0.WrX96W6zbl7Vo3Y8A2Vvfw',
+          '/restaurant.html?id=1',
+          '/restaurant.html?id=2',
+          '/restaurant.html?id=3',
+          '/restaurant.html?id=4',
+          '/restaurant.html?id=5',
+          '/restaurant.html?id=6',
+          '/restaurant.html?id=7',
+          '/restaurant.html?id=8',
+          '/restaurant.html?id=9',
+          '/restaurant.html?id=10',
+          '/img/icon.png',
+        ]).catch(error => {
+          console.log('Caches open failed: ' + error);
+        });
+      })
   );
 });
 
+function idbResponse(request) {
+  // 2. check idb & return match
+  // 3. if no match then clone, save, & return response
+
+  return idbKeyVal.get('restaurants')
+    .then(restaurants => {
+      return (
+        restaurants ||
+        fetch(request)
+          .then(response => response.json())
+          .then(json => {
+            idbKeyVal.set('restaurants', json);
+            return json;
+          })
+      );
+    })
+    .then(response => new Response(JSON.stringify(response)))
+    .catch(error => {
+      return new Response(error, {
+        status: 404,
+        statusText: 'bad request'
+      });
+    });
+}
+
+function cacheResponse(request) {
+  // match request...
+  return caches.match(request).then(response => {
+    // return matched response OR if no match then
+    // fetch, open cache, cache.put response.clone, return response
+    return response || fetch(request).then(fetchResponse => {
+      return caches.open(staticCacheName).then(cache => {
+        // filter out browser-sync resources otherwise it will err
+        if (!fetchResponse.url.includes('browser-sync')) { // prevent err
+          cache.put(request, fetchResponse.clone()); // put clone in cache
+        }
+        return fetchResponse; // send original back to browser
+      });
+    });
+  }).catch(error => {
+    return new Response(error, {
+      status: 404,
+      statusText: 'Not connected to the internet'
+    });
+  });
+}
 /**
  * activate service worker
  */
-self.addEventListener('activate', function(event) {
+self.addEventListener('activate', event => {
   event.waitUntil(
-   //createDB(),
-   storeJSONLocal(),
-    caches.keys().then(function(cacheNames) {
+    caches.keys().then(cacheNames => {
       return Promise.all(
-        cacheNames.filter(function(cacheName) {
-          // Return true if you want to remove this cache,
-          // but remember that caches are shared across
-          // the whole origin
-        }).map(function(cacheName) {
+        cacheNames.filter(cacheName => {
+          return cacheName.startsWith('restaurant-static') && cacheName !== staticCacheName;
+        }).map(cacheName => {
           return caches.delete(cacheName);
         })
       );
@@ -89,37 +137,18 @@ self.addEventListener('activate', function(event) {
   );
 });
 
-//fetchRestaurantsIDB(){
- // idb.open('restaurant_info', 1).then(function(db) {
-//    var tx = db.transaction(['restaurants'], 'readonly');
- //   var store = tx.objectStore('restaurants');
- //   return store.getAll()
- //   .then(items => {
-    // Use restaurant data
- //     return items;
-//    })
-//  });
-//}
-self.addEventListener('fetch', function (event) {
-  if(event.request.url === DBHelper.DATABASE_URL){
-    console.log("using idb");
-    idb.open('restaurant_info', 1).then(function(db) {
-    var tx = db.transaction(['restaurants'], 'readonly');
-    var store = tx.objectStore('restaurants');
-    return store.getAll()
-    .then(items => {
-    // Use restaurant data
-      return items;
-    })
-  });
-  }
-  else{
-      event.respondWith(caches.match(event.request).then(function (response) {
-        if (response ) console.log('Found in cache!', event.request.url);
-        return response || fetch(event.request);
-      }
-    ));
-  }
-    return;
-});
+/**
+ * fetch service worker
+ */
+self.addEventListener('fetch', event => {
+  const request = event.request;
+  const requestUrl = new URL(request.url);
 
+  // 1. filter Ajax Requests
+  if (requestUrl.port === '1337') {
+    event.respondWith(idbResponse(request));
+  }
+  else {
+    event.respondWith(cacheResponse(request));
+  }
+});

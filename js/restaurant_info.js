@@ -1,3 +1,6 @@
+/**
+ * set up variables
+ */
 let restaurant;
 var newMap;
 

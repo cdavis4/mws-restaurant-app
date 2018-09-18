@@ -17,10 +17,15 @@ class DBHelper {
    */
   static fetchRestaurants(callback) {
    fetch(DBHelper.DATABASE_URL)
-    .then(response => response.json())
-    .then(restaurants => {
-      callback(null, restaurants);
+    .then(response => {
+      if(!response.ok){
+        throw Error(`Request failed. Returned status of ${response.statusText}`);
+      }
+      const restaurants = response.json();
+      return restaurants;
     })
+    .then(restaurants => callback(null, restaurants))
+  
     .catch(error => {
       callback(error,null);
     });
