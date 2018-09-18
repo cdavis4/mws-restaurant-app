@@ -17,7 +17,6 @@ class DBHelper {
    */
   static fetchRestaurants(callback) {
    fetch(DBHelper.DATABASE_URL)
-   //https://css-tricks.com/using-fetch/ used this advice to fix
     .then(response => response.json())
     .then(restaurants => {
       callback(null, restaurants);
@@ -26,6 +25,9 @@ class DBHelper {
       callback(error,null);
     });
   }
+
+
+
 
   /**
    * Fetch a restaurant by its ID.

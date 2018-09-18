@@ -40,80 +40,6 @@ function storeJSONLocal(){
 }
 
 
-/**
- * add json from url
- */
-function readtheDatafromIndexedDb(dbName, storeName, key) {
-  return new Promise((resolve, reject) => {
-   var openRequest = indexedDB.open(dbName, 2);
-   openRequest.onupgradeneeded = function (e) {
-       let db = request.result;
-       if (!db.objectStore.contains(storeName)) {
-           db.createObjectStore(storeName, { autoIncrement: true });
-       }
-   }
-   openRequest.onsuccess = function (e) {
-       console.log("Success!");
-       db = e.target.result;
-       var transaction = db.transaction([storeName], "readwrite");
-       var store = transaction.objectStore(storeName);
-       var request = store.get(key);
-       request.onerror = function () {
-           console.log("Error");
-           reject("unexpected error happened");
-       }
-       request.onsuccess = function (e) {
-           console.log("return the respose from db");
-           //JSON.parse(request.result)
-           resolve(new Response( request.result, { headers: { 'content-type':'text/plain' } } ));
-       }
-   }
-   openRequest.onerror = function (e) {
-       console.log("Error");
-       console.dir(e);
-   }
-  });
-
-}
-
-
-function addJSON(indexDB){
-
-  fetch(DBHelper.DATABASE_URL)
-   .then(response => response.json())
-   .then(data =>{
-   for(i=0; i < data.length; i++){
-      indexDB.put({id:data[i].id,name: data[i].name});
-     console.log(data[i].name); //test to see if this works
-    }
-  });
-}
-/**
- * IDB create to store json
- */
-function createDB() {
-  idb.open('restaurant_info', 1, function(upgradeDB) {
-    var store = upgradeDB.createObjectStore('restaurants', {
-      keyPath: 'id'
-    });
-    addJSON(store); // Fails here
- //store.put({id: 1, name: "name"});
-  });
-}
-/**
- * read IDB once stored
- */
-function readDB() {
-  idb.open('restaurant_info', 1).then(function(db) {
-    var tx = db.transaction(['restaurants'], 'readonly');
-    var store = tx.objectStore('restaurants').index('id');
-    return store.getAll();
-  }).then(function(items) {
-    // Use restaurant data
-    console.log(items);
-  });
-}
-
 
 //install service worker
 self.addEventListener('install', function(event) {
@@ -163,20 +89,29 @@ self.addEventListener('activate', function(event) {
   );
 });
 
-
+//fetchRestaurantsIDB(){
+ // idb.open('restaurant_info', 1).then(function(db) {
+//    var tx = db.transaction(['restaurants'], 'readonly');
+ //   var store = tx.objectStore('restaurants');
+ //   return store.getAll()
+ //   .then(items => {
+    // Use restaurant data
+ //     return items;
+//    })
+//  });
+//}
 self.addEventListener('fetch', function (event) {
   if(event.request.url === DBHelper.DATABASE_URL){
-    console.log("using idb"),
-  idb.open('restaurant_info', 1).then(function(db) {
-      var tx = db.transaction(['restaurants'], 'readonly');
-      var store = tx.objectStore('restaurants');
-      return store.getAll()
-      .then(items => {
-      // Use restaurant data
-        return items;
-      })
-    });
-    //readDB();
+    console.log("using idb");
+    idb.open('restaurant_info', 1).then(function(db) {
+    var tx = db.transaction(['restaurants'], 'readonly');
+    var store = tx.objectStore('restaurants');
+    return store.getAll()
+    .then(items => {
+    // Use restaurant data
+      return items;
+    })
+  });
   }
   else{
       event.respondWith(caches.match(event.request).then(function (response) {
