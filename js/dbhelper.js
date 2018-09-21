@@ -1,9 +1,9 @@
+
 /**
  * Common database helper functions.
  */
 class DBHelper {
-
-  /**
+   /**
    * Database URL.
    * Change this to restaurants.json file location on your server.
    */
@@ -11,29 +11,68 @@ class DBHelper {
     const port = 1337 // Change this to your server port
     return `http://localhost:${port}/restaurants`;
   }
-
+  /**
+   * Database URL.
+   * Change this to restaurants.json file location on your server.
+   */
+  static get REVIEWS_URL() {
+    const port = 1337 // Change this to your server port
+    return `http://localhost:${port}/reviews`;
+  }
+/**
+   * Fetch all reviews.
+   */
+  static fetchReviews(callback) {
+    //fetch(DBHelper.REVIEWS_URL)
+    fetch(DBHelper.REVIEWS_URL + `/?restaurant_id=${id}`)
+     .then(response => {
+       if(!response.ok){
+         throw Error(`Request failed. Returned status of ${response.statusText}`);
+       }
+       const reviews = response.json();
+       return reviews;
+       
+     })
+     .then(reviews => callback(null, reviews))
+   
+     .catch(error => {
+       callback(error,null);
+     });
+   }
+ 
   /**
    * Fetch all restaurants.
    */
   static fetchRestaurants(callback) {
-   fetch(DBHelper.DATABASE_URL)
-    .then(response => {
-      if(!response.ok){
-        throw Error(`Request failed. Returned status of ${response.statusText}`);
-      }
-      const restaurants = response.json();
-      return restaurants;
-    })
-    .then(restaurants => callback(null, restaurants))
-  
-    .catch(error => {
-      callback(error,null);
+    fetch(DBHelper.DATABASE_URL)
+     .then(response => {
+       if(!response.ok){
+         throw Error(`Request failed. Returned status of ${response.statusText}`);
+       }
+       const restaurants = response.json();
+       return restaurants;
+     })
+     .then(restaurants => callback(null, restaurants))
+   
+     .catch(error => {
+       callback(error,null);
+     });
+   }
+   /**
+    * Fetch star
+    */
+
+   static markFavorite(id) {
+    fetch(DBHelper.DATABASE_URL + '/' + id + '/?is_favorite=true', {
+      method: 'PUT'
     });
   }
-
-
-
-
+  
+  static unMarkFavorite(id) {
+    fetch(DBHelper.DATABASE_URL + '/' + id + '/?is_favorite=false', {
+      method: 'PUT'
+    });
+  }
   /**
    * Fetch a restaurant by its ID.
    */
@@ -43,7 +82,9 @@ class DBHelper {
       if (error) {
         callback(error, null);
       } else {
+
         const restaurant = restaurants.find(r => r.id == id);
+        console.log(restaurants);
         if (restaurant) { // Got the restaurant
           callback(null, restaurant);
         } else { // Restaurant does not exist in the database
@@ -52,7 +93,136 @@ class DBHelper {
       }
     });
   }
+  
+  //static fetchReviewsById(id, callback) {
+    // fetch all restaurants with proper error handling.
+    
+   // DBHelper.fetchReviews((error, reviews) => {
+    //  if (error) {
+    //    callback(error, null);
+    //  } else {
+    //    const reviews = reviews.find(r => r.restaurant_id == id);
+    //    console.log(reviews);
+    
+  //  fetch(DBHelper.REVIEWS_URL + `/?restaurant_id=${id}`)
+  //  .then(response => response.json())
+  //  .then(data => {
+  //    const reviews = response.json();
+  //    callback(null,reviews);
+  //  })
+  //  .then(data => callback(null, reviews))
+  
+  //  .catch(error => {
+   //   callback(error,null);
+  //  });
+ // }
+/**
+  static fetchReviewsById(id,callback) {
+    //fetch(DBHelper.REVIEWS_URL)
+    fetch(DBHelper.REVIEWS_URL + `/?restaurant_id=${id}`)
+     .then(response => {
+       if(!response.ok){
+         throw Error(`Request failed. Returned status of ${response.statusText}`);
+       }
+     const reviews_response = response.json();
+       return reviews_response;
+     //console.log(reviews);
+     // const review= reviews.find(reviews => reviews.restaurant_id == id);
+       //console.log(review);
+     //callback(null,reviews_response);
+     })
+     .then(reviews => {
+       //callback(null, reviews),
+       console.log(reviews);
+       return reviews;
+      // const reviews = reviews;
+       //return reviews;
+      callback(null,reviews);
+     })
+   
+     .catch(error => {
+       callback(error,null);
+     });
+   } 
+   */
+/**
+static dbPromise(){
+  return idb.open('restaurant_reviews', 2, upgradeDB => {
+    switch(upgradeDB.oldVersion){
+      case 0:
+      upgradeDB.createObjectStore('restaurants',{
+        keyPath: 'id'
+      });
+      case 1:
+      const store = updgradeDb.createObjectStore('reviews', {
+        keyPath: 'id'
+      });
+      store.createIndex('restaurant', 'restaurant_id');
+    }
+  });
+}
 
+ /**
+static fetchReviewsById(id,callback) {
+  return fetch(DBHelper.REVIEWS_URL + `/?restaurant_id=${id}`)
+  .then(response => response.json())
+  .then(reviews => {
+    this.dbPromise()
+    //idb.open('restaurant_reviews', upgradeDB => {
+      // Note: we don't use 'break' in this switch statement,
+      // the fall-through behaviour is what we want.
+    //      const store = upgradeDB.createObjectStore('reviews', {keyPath: 'id'});
+    //      store.createIndex('restaurant','restaurant_id');
+      //  })
+      .then(db => {
+      if (!db) return;
+      let tx = db.transaction('reviews', 'readwrite');
+      const store = tx.objectStore('reviews');
+      if(Array.isArray(reviews)) {
+        reviews.forEach(function(review){
+          store.put(review);
+        });
+      } else{
+        store.put(reviews);
+      }
+    });
+  callback(null,reviews),
+  console.log('restaurant reviews are: ', reviews);
+  return Promise.resolve(reviews);
+  })
+  //.catch(error => callback(error, null));
+  .catch(error => {
+    return this.dbPromise().then(function(db){
+      if(!db) return;
+      const store = db.transaction('reviews').objectStore('reviews');
+      const indexId = store.index('restaurant');
+      return indexId.getAll(id);
+    });
+  });
+  }
+  */
+    /**
+   * Fetch a review by its ID.
+   */
+static fetchReviewsById(id, callback) {
+    // fetch all restaurants with proper error handling.
+    fetch(DBHelper.REVIEWS_URL + `/?restaurant_id=${id}`)
+    .then(response => response.json())
+    .then(data => callback(null, data))
+    .catch(error => callback(error, null));
+}
+
+//static dbPromise() {
+ // return idb.open('restaurant_reviews', 2, upgradeDB => {
+  // Note: we don't use 'break' in this switch statement,
+  // the fall-through behaviour is what we want.
+//  switch (upgradeDB.oldVersion) {
+//    case 0:
+ //     const store = upgradeDB.createObjectStore('reviews', {keyPath: 'id'});
+ //     store.createIndex('restaurant','restaurant_id');
+ //   }
+//  });
+//}
   /**
    * Fetch restaurants by a cuisine type with proper error handling.
    */
@@ -148,6 +318,14 @@ class DBHelper {
   static urlForRestaurant(restaurant) {
     return (`./restaurant.html?id=${restaurant.id}`);
   }
+  /**
+   * Reviews page URL.
+   */
+  static urlForReviews(id) {
+    return(DBHelper.REVIEWS_URL + `/reviews/?restaurant_id=${id}`);
+  }
+
+
 
   /**
    * Restaurant image URL.

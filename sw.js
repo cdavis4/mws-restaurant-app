@@ -1,6 +1,10 @@
 if (typeof idb === "undefined") {
   self.importScripts('js/idb.js');
  }
+
+ if (typeof DBHelper === "undefined") {
+  self.importScripts('js/dbhelper.js');
+ }
 //augmented code to use keyval source: https://github.com/jakearchibald/idb-keyval
  //source: https://james-priest.github.io/mws-restaurant-stage-1/stage2.html
 const staticCacheName = 'restaurant-static'; 
@@ -9,6 +13,13 @@ const dbPromise = idb.open('restaurant_info', 1, upgradeDB => {
   switch (upgradeDB.oldVersion) {
     case 0:
       upgradeDB.createObjectStore('restaurants');
+  }
+});
+
+const dbPromiseReview = idb.open('restaurant_reviews', 1, upgradeDB => {
+  switch (upgradeDB.oldVersion) {
+    case 0:
+      upgradeDB.createObjectStore('reviews');
   }
 });
 
@@ -27,6 +38,23 @@ const idbKeyVal = {
     return dbPromise.then(db => {
       const store = db.transaction('restaurants', 'readwrite');
       store.objectStore('restaurants').put(val, key);
+      return store.complete;
+    });
+  }
+};
+const idbReviewKeyVal = {
+  get(key) {
+    return dbPromiseReview.then(db => {
+      return db
+        .transaction('reviews')
+        .objectStore('reviews')
+        .get(key);
+    });
+  },
+  set(key, val) {
+    return dbPromiseReview.then(db => {
+      const store = db.transaction('reviews', 'readwrite');
+      store.objectStore('reviews').put(val, key);
       return store.complete;
     });
   }
@@ -77,17 +105,37 @@ self.addEventListener('install', event => {
 function idbResponse(request) {
   // 2. check idb & return match
   // 3. if no match then clone, save, & return response
-
-  return idbKeyVal.get('restaurants')
-    .then(restaurants => {
+  return idbKeyVal.get('restaurants') 
+  .then(restaurants => {
+    return (
+       restaurants || fetch(request)
+        .then(response => response.json())
+        .then(json => {
+          idbKeyVal.set('restaurants', json);
+          return json;
+        }) 
+    );
+  })
+  .then(response => new Response(JSON.stringify(response)))
+  .catch(error => {
+    return new Response(error, {
+      status: 404,
+      statusText: 'bad request'
+    });
+  });
+}
+function idbReviewResponse(id,request) {
+  // 2. check idb & return match
+  // 3. if no match then clone, save, & return response
+  return idbKeyVal.get(id)
+  .then(reviews => {
       return (
-        restaurants ||
-        fetch(request)
+         reviews || fetch(request)
           .then(response => response.json())
           .then(json => {
-            idbKeyVal.set('restaurants', json);
+           idbReviewKeyVal.set(id, json);
             return json;
-          })
+          }) 
       );
     })
     .then(response => new Response(JSON.stringify(response)))
@@ -97,6 +145,28 @@ function idbResponse(request) {
         statusText: 'bad request'
       });
     });
+  }
+
+/**
+ * combine create and add
+ */
+ //idb.open('restaurant_reviews', 1, upgradeDB => {
+ // switch (upgradeDB.oldVersion) {
+ //   case 0:
+ //     upgradeDB.createObjectStore('reviews');
+ // }
+//});
+function storeJSONLocal(){
+  fetch(DBHelper.DATABASE_URL)
+   .then(response => response.json())
+   .then(data =>{
+    //open indexDB database and add data in this then
+    idb.open('restaurant_reviews', 1, function(upgradeDB) {
+      var store = upgradeDB.createObjectStore('reviews',{
+        });
+        store.put('reviews',data);
+    });
+  });
 }
 
 function cacheResponse(request) {
@@ -125,6 +195,7 @@ function cacheResponse(request) {
  */
 self.addEventListener('activate', event => {
   event.waitUntil(
+   //storeJSONLocal(),
     caches.keys().then(cacheNames => {
       return Promise.all(
         cacheNames.filter(cacheName => {
@@ -145,10 +216,17 @@ self.addEventListener('fetch', event => {
   const requestUrl = new URL(request.url);
 
   // 1. filter Ajax Requests
-  if (requestUrl.port === '1337') {
+  if ((requestUrl.port === '1337')&& (event.request.url.endsWith('/restaurants'))) {
     event.respondWith(idbResponse(request));
   }
-  else {
+  if ((requestUrl.port === '1337')&& (event.request.url.includes('/reviews/'))) {
+    console.log(requestUrl),
+    searchURL = new URL(requestUrl);
+    var restaurantID = searchURL.searchParams.get("restaurant_id");
+    console.log(restaurantID),
+    event.respondWith(idbReviewResponse(restaurantID,request));
+  }
+  if(requestUrl.port !== '1337') {
     event.respondWith(cacheResponse(request));
   }
 });

@@ -174,10 +174,42 @@ createRestaurantHTML = (restaurant) => {
 
   li.append(image);
 
+  //create div to keep name and div so star can be right of name
+  //const div = document.createElement('div');
+  //div.setAttribute("id","restaurant-div");
+  //li.append(div);
+
+  //name
   const name = document.createElement('h3');
   name.innerHTML = restaurant.name;
-  li.append(name);
+ li.append(name);
 
+    //add star
+  const star = document.createElement('span');
+  star.setAttribute("role", "button");
+  star.setAttribute("class", "favorite-star-character");
+  star.setAttribute("data-tooltip", "Favorite");
+  star.setAttribute("data-tooltip-position", "right");
+  star.innerHTML = "&#x2605;";
+  li.append(star);
+
+  if (restaurant.is_favorite === 'true') {
+    star.classList.add('active');
+    star.setAttribute('aria-pressed', 'true');
+  } else {
+    star.setAttribute('aria-pressed', 'false');
+  }
+  star.addEventListener('click', () => {
+    if (star.classList.contains('active')) {
+      star.setAttribute('aria-pressed', 'false');
+      DBHelper.unMarkFavorite(restaurant.id);
+    } else {
+      star.setAttribute('aria-pressed', 'true');
+      DBHelper.markFavorite(restaurant.id);
+    }
+    star.classList.toggle('active');
+  });
+ 
   const neighborhood = document.createElement('p');
   neighborhood.innerHTML = restaurant.neighborhood;
   li.append(neighborhood);
