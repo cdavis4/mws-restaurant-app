@@ -251,19 +251,25 @@ h1 {
   width: 100%;
  
 }
-
-#reviews-container h2 {
+#reviews-container h3 {
   color: #046b99;
   font-size: 16pt;
   font-weight: 300;
-
 }
+
+
+#reviews-container label {
+  padding-top: 7px;
+  margin-bottom: 0;
+}
+
 #reviews-list {
   margin: 0;
   padding: 0;
 }
 #reviews-list li {
   background-color: #fff;
+  border: 2px solid #f3f3f3;
   display: block;
   list-style-type: none;
   margin: 0 0 30px;
@@ -315,5 +321,33 @@ h1 {
     margin: auto;
     padding: 20px;
     border: 1px solid #888;
-    width: 80%;
+    margin: 0 0 10px;
+    font-size: 1em;
+    background-color: white;
+    border: 2px solid #ccc;
+    font-family: Arial,sans-serif;
+    margin: 15px;
+    min-height: 380px;
+    padding: 25px;
+    text-align: left;
+    width: 75%;
+    max-width: 100%;
+    max-height: 100%;
+}
+.modal-content div {
+  margin: 0 0 10px;
+
+}
+.modal-content div form select{
+background-color: white;
+border: 1px solid #fff;
+font-family: Arial,sans-serif;
+font-size: 11pt;
+height: 35px;
+letter-spacing: 0;
+margin: 10px;
+padding: 0 10px;
+width: 200px;
+max-width:100%;
+max-height:100%; 
 }

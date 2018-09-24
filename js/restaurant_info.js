@@ -253,8 +253,31 @@ createReviewModal = (restaurant) =>{
   });
 }
 
-createForm = (restaurant=self.restaurant) => {
+//keep form from default opening dataurl submit page
+//document.querySelector(".submit_button").addEventListener('onsubmit',function(event){
+ // event.preventDefault()
+//});
+//const submit = document.getElementsByClassName("submit_button");
+//submit.addEventListener('submit',function(event){
+//  event.preventDefault()
+//});
+//document.getElementsByClassName("submit_button").addEventListener("click", function(event){
+ // event.preventDefault()
+//});
 
+
+createForm = (restaurant=self.restaurant) => {
+  const form = document.createElement('form');
+  form.setAttribute("id","review_form");
+
+ const h3 = document.createElement('h3');
+ h3.innerHTML = "Add Review";
+
+ //create restaurant id
+ const restaurantID = document.createElement("input");
+ restaurantID.setAttribute("type", "hidden");
+ restaurantID.setAttribute("name", "restaurant_id");
+ restaurantID.setAttribute("value", restaurant.id);
   //create name div
   const div_name = document.createElement('div');
   const label_name = document.createElement('label');
@@ -267,21 +290,67 @@ createForm = (restaurant=self.restaurant) => {
   div_name.appendChild(label_name);
   div_name.appendChild(input_name);
 
-  //create review div
+  //create rating div
+
   const div_rating = document.createElement('div');
+  const select_rating = document.createElement('select');
+  
   const label_rating = document.createElement('label');
   label_rating.setAttribute("for","rating");
   label_rating.innerHTML="Rating:";
   const input_rating = document.createElement('input');
   input_rating.setAttribute("id","rating");
-  input_rating.setAttribute("rating","rating");
-  input_rating.setAttribute("type","text");
+  input_rating.setAttribute("name","rating");
+  const option1 = document.createElement('option');
+  option1.setAttribute("value","1");
+  option1.innerHTML="1";
+  const option2 = document.createElement('option');
+  option2.setAttribute("value","2");
+  option2.innerHTML="2";
+  const option3 = document.createElement('option');
+  option3.setAttribute("value","3");
+  option3.innerHTML="3";
+  const option4 = document.createElement('option');
+  option4.setAttribute("value","4");
+  option4.innerHTML="4";
+  const option5 = document.createElement('option');
+  option5.setAttribute("value","5");
+  option5.innerHTML="5";
+  select_rating.appendChild(option1);
+  select_rating.appendChild(option2);
+  select_rating.appendChild(option3);
+  select_rating.appendChild(option4);
+  select_rating.appendChild(option5);
   div_rating.appendChild(label_rating);
-  div_rating.appendChild(input_rating);
+  div_rating.appendChild(select_rating);
+
+  const div_comments = document.createElement('div');
+  const label_comments = document.createElement('label');
+  label_comments.setAttribute("for","comments");
+  label_comments.innerHTML="Review:";
+  const input_comments = document.createElement('input');
+  input_comments.setAttribute("id","comments");
+  const text_comments = document.createElement('textarea');
+  text_comments.setAttribute("name","comments");
+  text_comments.setAttribute("form", "review_form");
+  div_comments.appendChild(label_comments);
+  div_comments.appendChild(text_comments);
+
+  const input_button = document.createElement('button');
+  const input_type = document.createElement("input");
+  input_type.setAttribute("type","submit");
+
+  input_button.setAttribute("class","submit_button");
+  input_button.innerHTML ="Submit Review";
   //add to form
-  const form = document.createElement('form');
+
+  form.appendChild(restaurantID);
   form.appendChild(div_name);
   form.appendChild(div_rating);
+  form.appendChild(div_comments);
+  form.appendChild(input_button);
+  form.setAttribute("action",DBHelper.REVIEWS_URL);
+  form.setAttribute("method", "post");
   return form;
 }
 
@@ -311,8 +380,36 @@ getParameterByName = (name, url) => {
   return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
 
+
+
  // cache review if offline
 // event.waitUntil(
 //  caches.open('static-v1').then(cache => cache.add('/cat.svg'))
 //);
 //});
+// Example POST method implementation:
+/**
+ * Add restaurant name to the breadcrumb navigation menu
+
+postData(`http://example.com/answer`, {answer: 42})
+  .then(data => console.log(JSON.stringify(data))) // JSON-string from `response.json()` call
+  .catch(error => console.error(error));
+
+function postData(url = ``, data = {}) {
+  // Default options are marked with *
+    return fetch(url, {
+        method: "POST", // *GET, POST, PUT, DELETE, etc.
+        mode: "cors", // no-cors, cors, *same-origin
+        cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: "same-origin", // include, same-origin, *omit
+        headers: {
+            "Content-Type": "application/json; charset=utf-8",
+            // "Content-Type": "application/x-www-form-urlencoded",
+        },
+        redirect: "follow", // manual, *follow, error
+        referrer: "no-referrer", // no-referrer, *client
+        body: JSON.stringify(data), // body data type must match "Content-Type" header
+    })
+    .then(response => return response.json()); // parses response to JSON
+}
+ */
