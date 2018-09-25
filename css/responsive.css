@@ -62,6 +62,11 @@
       margin-left: auto;
       margin-right: auto;
     }
+    .modal-content {
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+    }
     .inside #restaurant-name, #restaurant-address, td, p {
       font-size: 2em;
     }

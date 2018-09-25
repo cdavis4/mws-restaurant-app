@@ -59,7 +59,7 @@ class DBHelper {
      });
    }
    /**
-    * Fetch star
+    * Fetch star code credit https://james-priest.github.io
     */
 
    static markFavorite(id) {
@@ -71,6 +71,13 @@ class DBHelper {
   static unMarkFavorite(id) {
     fetch(DBHelper.DATABASE_URL + '/' + id + '/?is_favorite=false', {
       method: 'PUT'
+    });
+  }
+
+  //delete review
+  static deleteReview(id) {
+    fetch(DBHelper.REVIEWS_URL + '/' + id, {
+      method: 'DELETE'
     });
   }
   /**

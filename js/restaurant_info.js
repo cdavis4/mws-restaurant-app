@@ -1,3 +1,4 @@
+
 /**
  * set up variables
  */
@@ -79,6 +80,12 @@ fetchRestaurantFromURL = (callback) => {
     });
   }
 }
+
+/**
+ * activate the add review button
+ */
+
+
 /**
  * Create restaurant HTML and add it to the webpage
  */
@@ -173,7 +180,7 @@ fillReviewsHTML = (error,reviews) => {
   //});
   createReviewModal(restaurant); // create modal with review form
   
-console.log(reviews);
+//console.log(reviews);
   if (!reviews) {
     const noReviews = document.createElement('p');
     noReviews.innerHTML = 'No reviews yet!';
@@ -232,7 +239,20 @@ createReviewModal = (restaurant) =>{
   
   divContent.appendChild(createForm(restaurant));
 
-  
+
+  // add submit for form
+  //const form = document.getElementById('review_form');
+  //form.addEventListener ("submit", event => {
+  //  event.preventDefault();
+  //})
+  //  form.addEventListener('click', function(clickEvent){
+  //  const domEvent = document.createEvent('Event')
+  //  domEvent.initEvent('submit',false, true)
+  //  clickEvent.target.closest('form').dispatchEvent(domEvent);
+  //  console.log("HI this was clicked");
+  //  postData();
+   //.catch(error => console.error(error));
+  // });
 
   // Get the modal button, close button and modal
   const modal = document.getElementById("myModal");
@@ -276,6 +296,7 @@ createForm = (restaurant=self.restaurant) => {
  //create restaurant id
  const restaurantID = document.createElement("input");
  restaurantID.setAttribute("type", "hidden");
+ restaurantID.setAttribute("id", "restaurant_id");
  restaurantID.setAttribute("name", "restaurant_id");
  restaurantID.setAttribute("value", restaurant.id);
   //create name div
@@ -294,13 +315,11 @@ createForm = (restaurant=self.restaurant) => {
 
   const div_rating = document.createElement('div');
   const select_rating = document.createElement('select');
-  
+  select_rating.setAttribute('id', "rating");
   const label_rating = document.createElement('label');
   label_rating.setAttribute("for","rating");
   label_rating.innerHTML="Rating:";
-  const input_rating = document.createElement('input');
-  input_rating.setAttribute("id","rating");
-  input_rating.setAttribute("name","rating");
+  select_rating.setAttribute("name","rating");
   const option1 = document.createElement('option');
   option1.setAttribute("value","1");
   option1.innerHTML="1";
@@ -316,6 +335,7 @@ createForm = (restaurant=self.restaurant) => {
   const option5 = document.createElement('option');
   option5.setAttribute("value","5");
   option5.innerHTML="5";
+  select_rating.setAttribute("id","rating");
   select_rating.appendChild(option1);
   select_rating.appendChild(option2);
   select_rating.appendChild(option3);
@@ -328,19 +348,16 @@ createForm = (restaurant=self.restaurant) => {
   const label_comments = document.createElement('label');
   label_comments.setAttribute("for","comments");
   label_comments.innerHTML="Review:";
-  const input_comments = document.createElement('input');
-  input_comments.setAttribute("id","comments");
   const text_comments = document.createElement('textarea');
   text_comments.setAttribute("name","comments");
+  text_comments.setAttribute("id","comments");
   text_comments.setAttribute("form", "review_form");
   div_comments.appendChild(label_comments);
   div_comments.appendChild(text_comments);
 
   const input_button = document.createElement('button');
-  const input_type = document.createElement("input");
-  input_type.setAttribute("type","submit");
-
-  input_button.setAttribute("class","submit_button");
+  input_button.setAttribute("onclick","postData()")
+  input_button.setAttribute("id","submit_button");
   input_button.innerHTML ="Submit Review";
   //add to form
 
@@ -388,28 +405,44 @@ getParameterByName = (name, url) => {
 //);
 //});
 // Example POST method implementation:
-/**
- * Add restaurant name to the breadcrumb navigation menu
 
-postData(`http://example.com/answer`, {answer: 42})
-  .then(data => console.log(JSON.stringify(data))) // JSON-string from `response.json()` call
-  .catch(error => console.error(error));
+ //* Add restaurant name to the breadcrumb navigation menu
 
-function postData(url = ``, data = {}) {
+
+
+postData = () => {
   // Default options are marked with *
-    return fetch(url, {
+  //prevents post results page from opening
+  // credit offline, offline code and form submit idea from Project 3 Live Webinar MWS Stage 3 | Elisa & Lorenzo
+  event.preventDefault();
+  
+  let restaurant_id = getParameterByName('id');  
+  let reviewer_name = document.getElementById('name').value;
+  let rating = document.querySelector('#rating option:checked').value;
+  let comment_text = document.getElementById('comments').value;
+  let review_body = {
+    "restaurant_id": restaurant_id,
+    "name": reviewer_name,
+    "rating": rating,
+    "comments": comment_text
+    };
+    const myPost = fetch(DBHelper.REVIEWS_URL, {
         method: "POST", // *GET, POST, PUT, DELETE, etc.
         mode: "cors", // no-cors, cors, *same-origin
         cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
         credentials: "same-origin", // include, same-origin, *omit
         headers: {
             "Content-Type": "application/json; charset=utf-8",
-            // "Content-Type": "application/x-www-form-urlencoded",
+           // "Content-Type": "application/x-www-form-urlencoded",
         },
         redirect: "follow", // manual, *follow, error
         referrer: "no-referrer", // no-referrer, *client
-        body: JSON.stringify(data), // body data type must match "Content-Type" header
-    })
-    .then(response => return response.json()); // parses response to JSON
-}
- */
+        body: JSON.stringify(review_body), // body data type must match "Content-Type" header
+    }).then(response => response.json()); // parses response to JSO
+   console.log(myPost);
+   let modal = document.getElementById("myModal");
+    modal.style.display = "none";
+
+   return myPost;
+  }
+ 
