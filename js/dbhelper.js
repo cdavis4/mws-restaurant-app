@@ -343,12 +343,25 @@ static fetchReviewsById(id, callback) {
     let reviewer_name = document.getElementById('name').value;
     let rating = document.querySelector('#rating option:checked').value;
     let comment_text = document.getElementById('comments').value;
+    
     let review_body = {
       "restaurant_id": restaurant_id,
       "name": reviewer_name,
       "rating": rating,
       "comments": comment_text
       };
+      if(!navigator.onLine)
+      {
+        console.log("Request is offline");
+        let request = JSON.stringify(review_body);
+        let modal = document.getElementById("myModal");
+        modal.style.display = "none";
+        //idbReviewLocal(request); 
+      //  idbOfflineKeyVal.set('id', request);
+      localStorage.setItem(restaurant_id,request);
+      alert("Review will be stored offline");
+      }
+   
       const myPost = fetch(DBHelper.REVIEWS_URL, {
           method: "POST", // *GET, POST, PUT, DELETE, etc.
           mode: "cors", // no-cors, cors, *same-origin
@@ -365,7 +378,6 @@ static fetchReviewsById(id, callback) {
      console.log(myPost);
      let modal = document.getElementById("myModal");
       modal.style.display = "none";
-  
      return myPost;
     }
 

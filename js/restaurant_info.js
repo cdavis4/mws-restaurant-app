@@ -1,4 +1,38 @@
-
+//if (typeof getLocalReview() === "undefined") {
+//  self.importScripts('../sw.js');
+//}
+window.addEventListener('online', (event)=>{
+  console.log('Browser is online again');
+  let keys = Object.keys(localStorage);
+  i = keys.length;
+  for(var i=0; i < localStorage.length; i++)
+ { 
+ let obj = JSON.parse(localStorage.getItem(localStorage.key(i)));
+ let review_body = {
+  "restaurant_id": obj.restaurant_id,
+  "name": obj.name,
+  "rating": obj.rating,
+  "comments": obj.comments
+  };
+ fetch(DBHelper.REVIEWS_URL, {
+  method: "POST", // *GET, POST, PUT, DELETE, etc.
+  mode: "cors", // no-cors, cors, *same-origin
+  cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+  credentials: "same-origin", // include, same-origin, *omit
+  headers: {
+      "Content-Type": "application/json; charset=utf-8",
+     // "Content-Type": "application/x-www-form-urlencoded",
+  },
+  redirect: "follow", // manual, *follow, error
+  referrer: "no-referrer", // no-referrer, *client
+  body: JSON.stringify(review_body), // body data type must match "Content-Type" header
+}).then(response => response.json()); // parses response to JSO
+console.log(myPost);
+let modal = document.getElementById("myModal");
+modal.style.display = "none";
+  }
+  localStorage.clear();
+});
 /**
  * set up variables
  */
@@ -54,7 +88,6 @@ initMap = () => {
     }
   });
 } */
-
 
 /**
  * Get current restaurant from page URL.
@@ -178,6 +211,8 @@ fillReviewsHTML = (error,reviews) => {
   //const form_url = '/form.html';
   //window.location.replace(form_url);
   //});
+
+  //This listens if online
   createReviewModal(restaurant); // create modal with review form
   
 //console.log(reviews);
@@ -193,6 +228,10 @@ fillReviewsHTML = (error,reviews) => {
     ul.appendChild(createReviewHTML(review));
   });
   container.appendChild(ul);
+  //if(!navigator.online)
+  //{
+ // ul.appendChild(createOfflineHTML(restaurant.id));
+ // }
 }
 
 /**
@@ -220,6 +259,37 @@ createReviewHTML = (review) => {
   li.appendChild(comments);
   return li;
 }
+/**
+ * Offline review HTML add to webpage.
+ */
+createOfflineHTML = (id) => {
+  let obj = getLocalReview();
+  if((obj !=='undefined') && (obj.restaurant_id === id))
+  {
+  const li = document.createElement('li');
+  const name = document.createElement('p');
+  name.innerHTML = json.name;
+  li.appendChild(name);
+
+  const date = document.createElement('p');
+  var date_local = new Date(json.createdAt);
+  //date_local.setUTCSeconds(review.createdAt); 
+  date.innerHTML = date_local.toLocaleDateString();
+  li.appendChild(date);
+
+  const rating = document.createElement('p');
+  rating.innerHTML = `Rating: ${json.rating}`;
+  li.appendChild(rating);
+
+  const comments = document.createElement('p');
+  comments.setAttribute("class", "comments");
+  comments.innerHTML = json.comments;
+  li.appendChild(comments);
+  return li;
+  }
+  else return;
+}
+
 /**
  * Create review modal HTML and add it to the webpage.
 */ 

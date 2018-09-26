@@ -49,6 +49,24 @@ const idbKeyVal = {
     });
   }
 };
+
+const idbOfflineKeyVal = {
+  get(key) {
+    return dbPromiseOffline.then(db => {
+      return db
+        .transaction('offline')
+        .objectStore('offline')
+        .get(key);
+    });
+  },
+  set(key, val) {
+    return dbPromiseOffline.then(db => {
+      const store = db.transaction('offline', 'readwrite');
+      store.objectStore('offline').put(val, key);
+      return store.complete;
+    });
+  }
+};
 const idbReviewKeyVal = {
   get(key) {
     return dbPromiseReview.then(db => {
@@ -154,35 +172,38 @@ function idbReviewResponse(id,request) {
     });
   }
 
-/**
- * combine create and add
- */
- //idb.open('restaurant_reviews', 1, upgradeDB => {
- // switch (upgradeDB.oldVersion) {
- //   case 0:
- //     upgradeDB.createObjectStore('reviews');
- // }
-//});
-function storeReviewLocal(reviewPromise){
+/*
+function idbReviewLocal(request){
   console.log("Store reviews in idb script is starting");
-    reviewPromise
-   .then(data =>{
+  //let offlineRequest = request;
+ // fetch(request)
+  //  .then(response => response.json())
+  // .then(json =>{
     //open indexDB database and add data in this then
-    idb.open('offline_reviews', 1, function(upgradeDB) {
-      var store = upgradeDB.createObjectStore('offline',{ 
-        autoIncrement: true, keyPath: 'id'
-        });
-        store.put('offline',data);
-    }).then(registerSync => {
-      return registeration.sync.register('offline');
-  }).catch(error => {
-    return new Response(error, {
-      status: 404,
-      statusText: 'offline storage failed'
-    });
-    });
-  });
+    idbOfflineKeyVal.set('id', request);
+  //  return json;
+   //   return registeration.sync.register('offline');
+  //}).catch(error => {
+   // return new Response(error, {
+   //   status: 404,
+   //   statusText: 'Service Lost: offline storage enabled'
+   // });
+ //});
 }
+
+function getLocalReview(){
+   return idbOfflineKeyVal.get('id')
+   .then(response => response.json())
+   .then(json =>{
+            return JSON.parse(json);
+    })
+    .catch(error => {
+      return new Response(error, {
+        status: 404,
+        statusText: 'Offline Review Failed'
+      });
+    });
+}*/
 
 function cacheResponse(request) {
   // match request...
@@ -244,11 +265,9 @@ self.addEventListener('fetch', event => {
   if(requestUrl.port !== '1337') {
     event.respondWith(cacheResponse(request));
   }
-  if((request.method == 'POST') && (requestUrl.port == '1337')){
-    event.respondWith(storeReviewLocal(DBHelper.postData()));
-  }
 });
 
+/*
 function fetchReviewsIDB(){
   idb.open('offline_reviews', 1).then(function(db) {
    var tx = db.transaction(['offline'], 'readonly');
@@ -259,5 +278,5 @@ function fetchReviewsIDB(){
     }).catch(error => { console.error(error);
     });
   });
-}
+}*/
 
