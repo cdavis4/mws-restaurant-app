@@ -222,16 +222,19 @@ fillReviewsHTML = (error,reviews) => {
     container.appendChild(noReviews);
     return;
   }
-  
   const ul = document.getElementById('reviews-list');
+  const li = document.createElement('li');
+ 
+  if(localStorage.length > 0){
+    let id = getParameterByName('id');
+    console.log(id, "HI THIS IS ID For restaurant");
+    createOfflineHTML(id);
+    }
+  
   reviews.forEach(review => {
     ul.appendChild(createReviewHTML(review));
   });
   container.appendChild(ul);
-  //if(!navigator.online)
-  //{
- // ul.appendChild(createOfflineHTML(restaurant.id));
- // }
 }
 
 /**
@@ -262,9 +265,12 @@ createReviewHTML = (review) => {
 /**
  * Offline review HTML add to webpage.
  */
-createOfflineHTML = (id) => {
-  let obj = getLocalReview();
-  if((obj !=='undefined') && (obj.restaurant_id === id))
+createOfflineHTML = (id)=> {
+  li.setAttribute("class","offline");
+  let li = document.getElementsByClassName("offline");
+  let id =  '1';
+  let obj = localStorage.getItem(id);
+  if(obj.restaurant_id === id)
   {
   const li = document.createElement('li');
   const name = document.createElement('p');
@@ -285,9 +291,9 @@ createOfflineHTML = (id) => {
   comments.setAttribute("class", "comments");
   comments.innerHTML = json.comments;
   li.appendChild(comments);
-  return li;
+  const ul = document.getElementById('reviews-list');
+  ul.appendChild(li);
   }
-  else return;
 }
 
 /**
