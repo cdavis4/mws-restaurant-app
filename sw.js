@@ -5,6 +5,8 @@ if (typeof idb === "undefined") {
  if (typeof DBHelper === "undefined") {
   self.importScripts('js/dbhelper.js');
  }
+
+
 //augmented code to use keyval source: https://github.com/jakearchibald/idb-keyval
  //source: https://james-priest.github.io/mws-restaurant-stage-1/stage2.html
 const staticCacheName = 'restaurant-static'; 
@@ -23,12 +25,7 @@ const dbPromiseReview = idb.open('restaurant_reviews', 1, upgradeDB => {
   }
 });
 
-const dbPromiseOffline = idb.open('offline_reviews', 1, upgradeDB => {
-  switch (upgradeDB.oldVersion) {
-    case 0:
-      upgradeDB.createObjectStore('offline');
-  }
-});
+
 
 // IndexedDB object with get & set methods 
 // https://github.com/jakearchibald/idb
@@ -47,26 +44,24 @@ const idbKeyVal = {
       store.objectStore('restaurants').put(val, key);
       return store.complete;
     });
+  },
+  delete(key) {
+    return dbPromise.then(db => {
+      const tx = db.transaction('restaurants', 'readwrite');
+      tx.objectStore('restaurants').delete(key);
+      return tx.complete;
+    });
+  },
+  clear() {
+    return dbPromise.then(db => {
+      const tx = db.transaction('restaurants', 'readwrite');
+      tx.objectStore('restaurants').clear();
+      return tx.complete;
+    });
   }
 };
 
-const idbOfflineKeyVal = {
-  get(key) {
-    return dbPromiseOffline.then(db => {
-      return db
-        .transaction('offline')
-        .objectStore('offline')
-        .get(key);
-    });
-  },
-  set(key, val) {
-    return dbPromiseOffline.then(db => {
-      const store = db.transaction('offline', 'readwrite');
-      store.objectStore('offline').put(val, key);
-      return store.complete;
-    });
-  }
-};
+
 const idbReviewKeyVal = {
   get(key) {
     return dbPromiseReview.then(db => {
@@ -81,6 +76,13 @@ const idbReviewKeyVal = {
       const store = db.transaction('reviews', 'readwrite');
       store.objectStore('reviews').put(val, key);
       return store.complete;
+    });
+  },
+  delete(key) {
+    return dbPromise.then(db => {
+      const tx = db.transaction('reviews', 'readwrite');
+      tx.objectStore('reviews').delete(key);
+      return tx.complete;
     });
   }
 };
@@ -172,66 +174,11 @@ function idbReviewResponse(id,request) {
     });
   }
 
-/*
-function idbReviewLocal(request){
-  console.log("Store reviews in idb script is starting");
-  //let offlineRequest = request;
- // fetch(request)
-  //  .then(response => response.json())
-  // .then(json =>{
-    //open indexDB database and add data in this then
-    idbOfflineKeyVal.set('id', request);
-  //  return json;
-   //   return registeration.sync.register('offline');
-  //}).catch(error => {
-   // return new Response(error, {
-   //   status: 404,
-   //   statusText: 'Service Lost: offline storage enabled'
-   // });
- //});
-}
-
-function getLocalReview(){
-   return idbOfflineKeyVal.get('id')
-   .then(response => response.json())
-   .then(json =>{
-            return JSON.parse(json);
-    })
-    .catch(error => {
-      return new Response(error, {
-        status: 404,
-        statusText: 'Offline Review Failed'
-      });
-    });
-}*/
-
-function cacheResponse(request) {
-  // match request...
-  return caches.match(request).then(response => {
-    // return matched response OR if no match then
-    // fetch, open cache, cache.put response.clone, return response
-    return response || fetch(request).then(fetchResponse => {
-      return caches.open(staticCacheName).then(cache => {
-        // filter out browser-sync resources otherwise it will err
-        if (!fetchResponse.url.includes('browser-sync')) { // prevent err
-          cache.put(request, fetchResponse.clone()); // put clone in cache
-        }
-        return fetchResponse; // send original back to browser
-      });
-    });
-  }).catch(error => {
-    return new Response(error, {
-      status: 404,
-      statusText: 'Not connected to the internet'
-    });
-  });
-}
 /**
  * activate service worker
  */
 self.addEventListener('activate', event => {
   event.waitUntil(
-   //storeJSONLocal(),
     caches.keys().then(cacheNames => {
       return Promise.all(
         cacheNames.filter(cacheName => {
@@ -254,29 +201,19 @@ self.addEventListener('fetch', event => {
   // 1. filter Ajax Requests
   if ((requestUrl.port === '1337')&& (event.request.url.endsWith('/restaurants'))) {
     event.respondWith(idbResponse(request));
+    //update cache when online so it's not stale
+    if (navigator.onLine)
+    {
+    idbKeyVal.clear();
+    }
   }
   if ((requestUrl.port == '1337') && (event.request.url.includes('/reviews/'))) {
-    console.log(requestUrl),
     searchURL = new URL(requestUrl);
     var restaurantID = searchURL.searchParams.get("restaurant_id");
-    console.log(restaurantID),
     event.respondWith(idbReviewResponse(restaurantID,request));
   }
   if(requestUrl.port !== '1337') {
     event.respondWith(cacheResponse(request));
   }
 });
-
-/*
-function fetchReviewsIDB(){
-  idb.open('offline_reviews', 1).then(function(db) {
-   var tx = db.transaction(['offline'], 'readonly');
-    var store = tx.objectStore('offline');
-    return store.getAll()
-    .then(items => {
-    // Use restaurant review data
-    }).catch(error => { console.error(error);
-    });
-  });
-}*/
 
