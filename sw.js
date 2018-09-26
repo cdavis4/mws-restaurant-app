@@ -23,6 +23,13 @@ const dbPromiseReview = idb.open('restaurant_reviews', 1, upgradeDB => {
   }
 });
 
+const dbPromiseOffline = idb.open('offline_reviews', 1, upgradeDB => {
+  switch (upgradeDB.oldVersion) {
+    case 0:
+      upgradeDB.createObjectStore('offline');
+  }
+});
+
 // IndexedDB object with get & set methods 
 // https://github.com/jakearchibald/idb
 const idbKeyVal = {
@@ -120,14 +127,14 @@ function idbResponse(request) {
   .catch(error => {
     return new Response(error, {
       status: 404,
-      statusText: 'bad request'
+      statusText: 'bad restaurant request'
     });
   });
 }
 function idbReviewResponse(id,request) {
   // 2. check idb & return match
   // 3. if no match then clone, save, & return response
-  return idbKeyVal.get(id)
+  return idbReviewKeyVal.get(id)
   .then(reviews => {
       return (
          reviews || fetch(request)
@@ -142,7 +149,7 @@ function idbReviewResponse(id,request) {
     .catch(error => {
       return new Response(error, {
         status: 404,
-        statusText: 'bad request'
+        statusText: 'bad review request'
       });
     });
   }
@@ -156,15 +163,23 @@ function idbReviewResponse(id,request) {
  //     upgradeDB.createObjectStore('reviews');
  // }
 //});
-function storeJSONLocal(){
-  fetch(DBHelper.DATABASE_URL)
-   .then(response => response.json())
+function storeReviewLocal(reviewPromise){
+  console.log("Store reviews in idb script is starting");
+    reviewPromise
    .then(data =>{
     //open indexDB database and add data in this then
-    idb.open('restaurant_reviews', 1, function(upgradeDB) {
-      var store = upgradeDB.createObjectStore('reviews',{
+    idb.open('offline_reviews', 1, function(upgradeDB) {
+      var store = upgradeDB.createObjectStore('offline',{ 
+        autoIncrement: true, keyPath: 'id'
         });
-        store.put('reviews',data);
+        store.put('offline',data);
+    }).then(registerSync => {
+      return registeration.sync.register('offline');
+  }).catch(error => {
+    return new Response(error, {
+      status: 404,
+      statusText: 'offline storage failed'
+    });
     });
   });
 }
@@ -214,12 +229,12 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
   const request = event.request;
   const requestUrl = new URL(request.url);
-
+  
   // 1. filter Ajax Requests
   if ((requestUrl.port === '1337')&& (event.request.url.endsWith('/restaurants'))) {
     event.respondWith(idbResponse(request));
   }
-  if ((requestUrl.port === '1337')&& (event.request.url.includes('/reviews/'))) {
+  if ((requestUrl.port == '1337') && (event.request.url.includes('/reviews/'))) {
     console.log(requestUrl),
     searchURL = new URL(requestUrl);
     var restaurantID = searchURL.searchParams.get("restaurant_id");
@@ -229,4 +244,20 @@ self.addEventListener('fetch', event => {
   if(requestUrl.port !== '1337') {
     event.respondWith(cacheResponse(request));
   }
+  if((request.method == 'POST') && (requestUrl.port == '1337')){
+    event.respondWith(storeReviewLocal(DBHelper.postData()));
+  }
 });
+
+function fetchReviewsIDB(){
+  idb.open('offline_reviews', 1).then(function(db) {
+   var tx = db.transaction(['offline'], 'readonly');
+    var store = tx.objectStore('offline');
+    return store.getAll()
+    .then(items => {
+    // Use restaurant review data
+    }).catch(error => { console.error(error);
+    });
+  });
+}
+

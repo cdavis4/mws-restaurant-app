@@ -356,7 +356,7 @@ createForm = (restaurant=self.restaurant) => {
   div_comments.appendChild(text_comments);
 
   const input_button = document.createElement('button');
-  input_button.setAttribute("onclick","postData()")
+  input_button.setAttribute("onclick","DBHelper.postData()")
   input_button.setAttribute("id","submit_button");
   input_button.innerHTML ="Submit Review";
   //add to form
@@ -410,39 +410,5 @@ getParameterByName = (name, url) => {
 
 
 
-postData = () => {
-  // Default options are marked with *
-  //prevents post results page from opening
-  // credit offline, offline code and form submit idea from Project 3 Live Webinar MWS Stage 3 | Elisa & Lorenzo
-  event.preventDefault();
-  
-  let restaurant_id = getParameterByName('id');  
-  let reviewer_name = document.getElementById('name').value;
-  let rating = document.querySelector('#rating option:checked').value;
-  let comment_text = document.getElementById('comments').value;
-  let review_body = {
-    "restaurant_id": restaurant_id,
-    "name": reviewer_name,
-    "rating": rating,
-    "comments": comment_text
-    };
-    const myPost = fetch(DBHelper.REVIEWS_URL, {
-        method: "POST", // *GET, POST, PUT, DELETE, etc.
-        mode: "cors", // no-cors, cors, *same-origin
-        cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-        credentials: "same-origin", // include, same-origin, *omit
-        headers: {
-            "Content-Type": "application/json; charset=utf-8",
-           // "Content-Type": "application/x-www-form-urlencoded",
-        },
-        redirect: "follow", // manual, *follow, error
-        referrer: "no-referrer", // no-referrer, *client
-        body: JSON.stringify(review_body), // body data type must match "Content-Type" header
-    }).then(response => response.json()); // parses response to JSO
-   console.log(myPost);
-   let modal = document.getElementById("myModal");
-    modal.style.display = "none";
 
-   return myPost;
-  }
  
