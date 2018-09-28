@@ -3,17 +3,17 @@
     "name": "Restaurant Reviewer App",
     "icons": [
       {
-        "src": "/imag/iconSM.png",
+        "src": "/img/iconSM.png",
         "type": "image/png",
         "sizes": "50x50"
       },
       {
-        "src": "/imag/iconsMD.png",
+        "src": "/img/iconsMD.png",
         "type": "image/png",
         "sizes": "192x192"
       },
       {
-        "src": "/imag/iconsLG.png",
+        "src": "/img/iconsLG.png",
         "type": "image/png",
         "sizes": "512x512"
       }

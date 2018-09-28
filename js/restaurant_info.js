@@ -1,6 +1,7 @@
-//if (typeof getLocalReview() === "undefined") {
-//  self.importScripts('../sw.js');
-//}
+
+/**
+ * POST offline review once online again
+ */
 window.addEventListener('online', (event)=>{
   console.log('Browser is online again');
   let keys = Object.keys(localStorage);
@@ -198,22 +199,6 @@ fillReviewsHTML = (error,reviews) => {
   const title = document.createElement('h3');
   title.innerHTML = 'Reviews';
   container.appendChild(title);
-
-  //add Add Review Button
-  const reviewButton = document.createElement('button');
-  reviewButton.innerHTML = 'Add Review';
-  container.appendChild(reviewButton);
-  reviewButton.setAttribute("id", "reviewBtn");
-  reviewButton.setAttribute("role", "button");
-  reviewButton.setAttribute("aria-label", "add review");
-  //get reviews for restaurant
-  //reviewButton .addEventListener ("click", function() {
-  //const form_url = '/form.html';
-  //window.location.replace(form_url);
-  //});
-
-  //This listens if online
-  createReviewModal(restaurant); // create modal with review form
   
 //console.log(reviews);
   if (!reviews) {
@@ -224,17 +209,22 @@ fillReviewsHTML = (error,reviews) => {
   }
   const ul = document.getElementById('reviews-list');
   const li = document.createElement('li');
- 
-  if(localStorage.length > 0){
-    let id = getParameterByName('id');
-    console.log(id, "HI THIS IS ID For restaurant");
-    createOfflineHTML(id);
-    }
-  
+
   reviews.forEach(review => {
     ul.appendChild(createReviewHTML(review));
   });
   container.appendChild(ul);
+
+    //add Add Review Button
+    const reviewButton = document.createElement('button');
+    reviewButton.innerHTML = 'Add Review';
+    container.appendChild(reviewButton);
+    reviewButton.setAttribute("id", "reviewBtn");
+    reviewButton.setAttribute("role", "button");
+    reviewButton.setAttribute("aria-label", "add review");
+   
+    //This listens if online
+    createReviewModal(restaurant); // create modal with review form
 }
 
 /**
@@ -315,21 +305,6 @@ createReviewModal = (restaurant) =>{
   
   divContent.appendChild(createForm(restaurant));
 
-
-  // add submit for form
-  //const form = document.getElementById('review_form');
-  //form.addEventListener ("submit", event => {
-  //  event.preventDefault();
-  //})
-  //  form.addEventListener('click', function(clickEvent){
-  //  const domEvent = document.createEvent('Event')
-  //  domEvent.initEvent('submit',false, true)
-  //  clickEvent.target.closest('form').dispatchEvent(domEvent);
-  //  console.log("HI this was clicked");
-  //  postData();
-   //.catch(error => console.error(error));
-  // });
-
   // Get the modal button, close button and modal
   const modal = document.getElementById("myModal");
   const closeBtn = document.getElementsByClassName("close")[0];
@@ -347,20 +322,26 @@ createReviewModal = (restaurant) =>{
       modal.style.display = "none";
     }
   });
+/**
+* update browser when online and review is added
+*/
+  const submitButton = document.getElementById("submit_button");
+  submitButton.addEventListener("click",function(){
+    let reload = function() {
+      const url = self.location;
+      window.location.replace(url);
+      //window.location.reload(true);
+      }
+    if (navigator.onLine)
+      {
+        setTimeout(reload, 1000);
+      }
+  });
 }
 
-//keep form from default opening dataurl submit page
-//document.querySelector(".submit_button").addEventListener('onsubmit',function(event){
- // event.preventDefault()
-//});
-//const submit = document.getElementsByClassName("submit_button");
-//submit.addEventListener('submit',function(event){
-//  event.preventDefault()
-//});
-//document.getElementsByClassName("submit_button").addEventListener("click", function(event){
- // event.preventDefault()
-//});
-
+/**
+ * create html for reviews form
+ */
 
 createForm = (restaurant=self.restaurant) => {
   const form = document.createElement('form');
@@ -377,6 +358,7 @@ createForm = (restaurant=self.restaurant) => {
  restaurantID.setAttribute("value", restaurant.id);
   //create name div
   const div_name = document.createElement('div');
+  div_name.setAttribute("class", "form_div");
   const label_name = document.createElement('label');
   label_name.setAttribute("for","name");
   label_name.innerHTML="Name:";
@@ -390,6 +372,7 @@ createForm = (restaurant=self.restaurant) => {
   //create rating div
 
   const div_rating = document.createElement('div');
+  div_rating.setAttribute("class", "form_div");
   const select_rating = document.createElement('select');
   select_rating.setAttribute('id', "rating");
   const label_rating = document.createElement('label');
@@ -397,20 +380,20 @@ createForm = (restaurant=self.restaurant) => {
   label_rating.innerHTML="Rating:";
   select_rating.setAttribute("name","rating");
   const option1 = document.createElement('option');
-  option1.setAttribute("value","1");
-  option1.innerHTML="1";
+  option1.setAttribute("value","5");
+  option1.innerHTML="5";
   const option2 = document.createElement('option');
-  option2.setAttribute("value","2");
-  option2.innerHTML="2";
+  option2.setAttribute("value","4");
+  option2.innerHTML="4";
   const option3 = document.createElement('option');
   option3.setAttribute("value","3");
   option3.innerHTML="3";
   const option4 = document.createElement('option');
-  option4.setAttribute("value","4");
-  option4.innerHTML="4";
+  option4.setAttribute("value","2");
+  option4.innerHTML="2";
   const option5 = document.createElement('option');
-  option5.setAttribute("value","5");
-  option5.innerHTML="5";
+  option5.setAttribute("value","1");
+  option5.innerHTML="1";
   select_rating.setAttribute("id","rating");
   select_rating.appendChild(option1);
   select_rating.appendChild(option2);
@@ -421,6 +404,7 @@ createForm = (restaurant=self.restaurant) => {
   div_rating.appendChild(select_rating);
 
   const div_comments = document.createElement('div');
+  div_comments.setAttribute("class", "form_div");
   const label_comments = document.createElement('label');
   label_comments.setAttribute("for","comments");
   label_comments.innerHTML="Review:";
@@ -431,17 +415,20 @@ createForm = (restaurant=self.restaurant) => {
   div_comments.appendChild(label_comments);
   div_comments.appendChild(text_comments);
 
+  const div_button = document.createElement('div');
+  div_button.setAttribute("class", "form_div");
   const input_button = document.createElement('button');
   input_button.setAttribute("onclick","DBHelper.postData()")
   input_button.setAttribute("id","submit_button");
   input_button.innerHTML ="Submit Review";
+  div_button.appendChild(input_button);
   //add to form
 
   form.appendChild(restaurantID);
   form.appendChild(div_name);
   form.appendChild(div_rating);
   form.appendChild(div_comments);
-  form.appendChild(input_button);
+  form.appendChild(div_button);
   form.setAttribute("action",DBHelper.REVIEWS_URL);
   form.setAttribute("method", "post");
   return form;
@@ -472,18 +459,6 @@ getParameterByName = (name, url) => {
     return '';
   return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
-
-
-
- // cache review if offline
-// event.waitUntil(
-//  caches.open('static-v1').then(cache => cache.add('/cat.svg'))
-//);
-//});
-// Example POST method implementation:
-
- //* Add restaurant name to the breadcrumb navigation menu
-
 
 
 

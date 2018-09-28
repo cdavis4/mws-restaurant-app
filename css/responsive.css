@@ -5,10 +5,6 @@
     width: 100%;
     background-color: #ccc;
   }
-  .inside {
-    height: 100%;
-    overflow-x: hidden; 
-  }
   .inside td{
     display: block;
   }

@@ -79,9 +79,16 @@ const idbReviewKeyVal = {
     });
   },
   delete(key) {
-    return dbPromise.then(db => {
+    return dbPromiseReview.then(db => {
       const tx = db.transaction('reviews', 'readwrite');
       tx.objectStore('reviews').delete(key);
+      return tx.complete;
+    });
+  },
+  clear() {
+    return dbPromiseReview.then(db => {
+      const tx = db.transaction('reviews', 'readwrite');
+      tx.objectStore('reviews').clear();
       return tx.complete;
     });
   }
@@ -222,16 +229,25 @@ self.addEventListener('fetch', event => {
   // 1. filter Ajax Requests
   if ((requestUrl.port === '1337')&& (event.request.url.endsWith('/restaurants'))) {
     event.respondWith(idbResponse(request));
+  }
+  if (request.method === 'PUT') {
     //update cache when online so it's not stale
     if (navigator.onLine)
     {
     idbKeyVal.clear();
     }
   }
-  if ((requestUrl.port == '1337') && (event.request.url.includes('/reviews/'))) {
+  if ((requestUrl.port === '1337') && (request.url.includes('/reviews/'))) {
     searchURL = new URL(requestUrl);
     var restaurantID = searchURL.searchParams.get("restaurant_id");
     event.respondWith(idbReviewResponse(restaurantID,request));
+  }
+  if(request.method === 'POST') {
+  
+   if (navigator.onLine)
+     {
+      idbReviewKeyVal.clear();
+      }
   }
   if(requestUrl.port !== '1337') {
     event.respondWith(cacheResponse(request));

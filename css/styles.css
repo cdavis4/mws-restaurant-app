@@ -1,5 +1,6 @@
 @charset "utf-8";
 /* CSS Document */
+html{overflow-x: hidden;}
 
 body,td,th,p{
 	font-family: Arial, Helvetica, sans-serif;
@@ -9,7 +10,6 @@ body,td,th,p{
 }
 body {
 	background-color: #fdfdfd;
-	position:relative;
 }
 ul, li {
 	font-family: Arial, Helvetica, sans-serif;
@@ -192,6 +192,7 @@ h1 {
   margin: 15px 0 0;
   padding: 8px 30px 10px;
   text-align: center;
+  cursor: pointer;
 
 }
 
@@ -208,12 +209,15 @@ h1 {
 /* ====================== Restaurant Details ====================== */
 
 .inside{
-  margin: 0%;
-  
+  width: 100%;
+  height: 100%;
+  margin: 0px;
+  padding: 0px;
+  overflow-x: hidden; 
 }
 .inside #map-container {
-    width: 100%;
-    padding: 25px;
+  width: 100%;
+  padding: 25px;
 }
 .inside #map {
   background-color: #ccc;
@@ -247,9 +251,7 @@ h1 {
 
 }
 #restaurant-container, #reviews-container {
-  padding: 25px;
-  width: 100%;
- 
+padding: 25px;
 }
 #reviews-container h3 {
   color: #046b99;
@@ -267,6 +269,18 @@ h1 {
   margin: 0;
   padding: 0;
 }
+#reviews-container #reviewBtn {
+  cursor: pointer;
+  background-color: #046b99;
+  border-bottom: 3px solid #eee;
+  color: #fff;
+  display: inline-block;
+  font-size: 10pt;
+  margin: 15px 0 0;
+  padding: 8px 30px 10px;
+  text-align: center;
+}
+
 #reviews-list li {
   background-color: #fff;
   border: 2px solid #f3f3f3;
@@ -299,7 +313,9 @@ h1 {
   text-decoration: none;
   cursor: pointer;
 }
-
+.form_div{
+  width: 100%;
+}
 /* The Modal (background) */
 .modal {
     display: none; /* Hidden by default */
@@ -320,7 +336,6 @@ h1 {
   background-color: #fefefe;
     border: 1px solid #888;
     margin:15% auto;
-    margin-left: 25px;
     font-size: 1em;
     padding: 20px;
     background-color: white;
@@ -330,24 +345,10 @@ h1 {
     text-align: left;
     width: 65%;
     flex:auto;
+    display: flow-root;
 }
-.modal-content div {
-  margin: 0 0 10px;
 
-}
-.modal-content div form select, texarea{
-  background-color: white;
-  font-family: Arial,sans-serif;
-  letter-spacing: 0;
-  margin: 10px;
-  padding: 0 10px;
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  resize: vertical;
-}
-.modal-content div form label{
+.modal-content label{
   padding: 12px 12px 12px 0;
   display: inline-block;
 }
@@ -359,4 +360,19 @@ h1 {
   border-radius: 4px;
   cursor: pointer;
   float: right;
+}
+#comments{
+  background-color: white;
+  font-family: Arial,sans-serif;
+  letter-spacing: 0;
+  margin: 10px;
+  padding: 0 10px;
+  width: 80%;
+  padding: 12px;
+  border: 1px solid black;
+  border-radius: 4px;
+  resize: vertical;
+}
+select#rating{
+  font-size: 1em;
 }
