@@ -268,7 +268,7 @@ static fetchReviewsById(id, callback) {
    * Restaurant image URL.
    */
   static imageUrlForRestaurant(restaurant) {
-  return (`/img/${restaurant.photograph}'-600_1x.jpg'`);
+  return (`/img/${restaurant.photograph}-600_1x.jpg`);
   //return (`/img/${restaurant.photograph}-300_2x.jpg`);
   }
   /**

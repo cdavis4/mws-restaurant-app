@@ -157,7 +157,7 @@ createRestaurantHTML = (restaurant) => {
 
  image.alt = "photo from restaurant " + restaurant.name;
 
- image.srcset = "/img/"+ restaurant.id + "-300_1x.jpg 400w", "/img/" 
+ image.srcset = "/img/"+ restaurant.id + "-300_1x.jpg 400w, /img/" 
  +restaurant.id + "-600_1x.jpg 1000w";
 
   li.append(image);
