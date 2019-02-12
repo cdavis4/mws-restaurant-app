@@ -143,7 +143,7 @@ h1 {
   cursor: pointer;
   align-self: flex-end;
   margin-bottom: 2em;
-  width: 48px;
+  font-size: 48px;
 }
 .favorite-star-character.active{
   color:#ffac33;
