@@ -143,12 +143,13 @@ h1 {
   cursor: pointer;
   align-self: flex-end;
   margin-bottom: 2em;
+  width: 48px;
 }
 .favorite-star-character.active{
   color:#ffac33;
 }
 .favorite-star-character:hover{
-  color: #939393;
+  color: #E76E3C;
   content: attr(data-tooltip);
 }
 
