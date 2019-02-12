@@ -8,7 +8,7 @@ Goal is to learn by converting static webpage to fully responsive, accessible mo
 
 For the **Restaurant Reviews** projects, incrementally convert a static webpage to a mobile-ready web application. In **Stage One**, take a static design that lacks accessibility and convert the design to be responsive on different sized displays and accessible for screen reader use. Add a service worker to begin the process of creating a seamless offline experience for users.
 
-### Requirements
+### Requirements Completed
 
 **Make the provided site fully responsive** All of the page elements should be usable and visible in any viewport, including desktop, tablet, and mobile displays. Images shouldn't overlap, and page elements should wrap when the viewport is too small to display them side by side.
 
@@ -22,7 +22,7 @@ Ensure that <kbd>alt</kbd> attributes are present and descriptive for images. Ad
 
 In **Stage Two**, take the responsive, accessible design you built in **Stage One** and connect it to an external server. Use asynchronous JavaScript to request JSON data from the server. Store data received from the server in an offline database using IndexedDB, to create an app shell architecture. Finally, optimize site to meet performance benchmarks, tested using [Lighthouse](https://developers.google.com/web/tools/lighthouse/).
 
-### Requirements
+### Requirements Completed
 
 **Use server data instead of local memory** In the first version of the application, all of the data for the restaurants was stored in the local application. Change this behavior so that data comes from the server instead, and using the response data to generate the restaurant information on the main page and the detail page.
 
@@ -36,16 +36,25 @@ Progressive Web App | >= 90
 Performance  | >= 70
 Accessibility | >- 90
 
-## Project Overview: Stage 3
+## Restaurants Reviews App: Stage 3
 
-For the **Restaurant Reviews** projects, you will incrementally convert a static webpage to a mobile-ready web application. In **Stage One**, you will take a static design that lacks accessibility and convert the design to be responsive on different sized displays and accessible for screen reader use. You will also add a service worker to begin the process of creating a seamless offline experience for your users.
+In **Stage Three**, using the connected application you built in **Stage One** and **Stage Two** and add additional functionality. Add a form to allow users to create their own reviews. If the app is offline, the form will defer updating to the remote database until a connection is established. Then, optimize your site to meet even stricter performance benchmarks than the previous project.
 
+### Requirements Completed
 
-[Lighthouse Score](https://googlechrome.github.io/lighthouse/viewer/?gist=67bb7c822fa2fd26ba5c1d78d05a34cf)
+**Add a form to allow users to create their own reviews:** Add a form that adds new reviews to the database. The form should include the user’s name, the restaurant id, the user’s rating, and whatever comments they have. Submitting the form should update the server when the user is online.
 
+**Add functionality to defer updates until the user is connected:** If the user is not online, the app should notify the user that they are not connected, and save the users' data to submit automatically when re-connected. In this case, the review should be deferred and sent to the server when connection is re-established.
 
-You have been provided the code for a restaurant reviews website. The code has a lot of issues. It’s barely usable on a desktop browser, much less a mobile device. It also doesn’t include any standard accessibility features, and it doesn’t work offline at all. Your job is to update the code to resolve these issues while still maintaining the included functionality. 
+**Meet the new performance requirements:** In addition to adding new features, the performance targets you met in Stage Two have tightened. Using Lighthouse, you’ll need to measure your site performance against the new targets.
 
-maintain use of ES6 in any additional JavaScript you write. 
+Audits | Score
+------------- | -------------
+Progressive Web App | >= 90
+Performance  | >= 90
+Accessibility | >- 90
 
+[Final Lighthouse Score](https://googlechrome.github.io/lighthouse/viewer/?gist=67bb7c822fa2fd26ba5c1d78d05a34cf)
+
+[Certificate of Completion](https://confirm.udacity.com/DUZXESVQ)
 
