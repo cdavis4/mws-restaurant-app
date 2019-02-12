@@ -106,8 +106,8 @@ self.addEventListener('install', event => {
           '/css/responsive.css',
           '/index.html',
           '/restaurant.html',
-          'js/main.js',
-          'js/restaurant_info.js',
+          '/js/main.js',
+          '/js/restaurant_info.js',
           '/registerSW.js',
           '/sw.js',
           'js/idb.js',
@@ -128,7 +128,7 @@ self.addEventListener('install', event => {
           '/restaurant.html?id=8',
           '/restaurant.html?id=9',
           '/restaurant.html?id=10',
-          '/img/icon.png',
+          '/img/icon.png'
         ]).catch(error => {
           console.log('Caches open failed: ' + error);
         });
