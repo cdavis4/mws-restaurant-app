@@ -268,8 +268,8 @@ static fetchReviewsById(id, callback) {
    * Restaurant image URL.
    */
   static imageUrlForRestaurant(restaurant) {
-  //  return (`/img/${restaurant.photograph}'-600_2x.jpg'`);
-  return (`/img/${restaurant.photograph}-300_2x.jpg`);
+  return (`/img/${restaurant.photograph}'-600_2x.jpg'`);
+  //return (`/img/${restaurant.photograph}-300_2x.jpg`);
   }
   /**
    * Map marker for a restaurant.
