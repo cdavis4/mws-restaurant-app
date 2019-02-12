@@ -1,0 +1,22 @@
+{
+  "name": "minifier",
+  "description": "minifies CSS, JS, & HTML files",
+  "author": "Carrie Davis",
+  "devDependencies": {
+    "del": "^2.0.2",
+    "gulp": "^3.9.1",
+    "gulp-autoprefixer": "latest",
+    "gulp-csso": "^2.0.0",
+    "gulp-htmlmin": "^3.0.0",
+    "gulp-minify": "^3.1.0",
+    "gulp-uglify": "^3.0.1",
+    "run-sequence": "^1.2.2"
+  },
+  "engines": {
+    "node": ">=0.12.0"
+  },
+  "dependencies": {
+    "i": "^0.3.6",
+    "node": "^11.9.0"
+  }
+}
