@@ -106,8 +106,8 @@ self.addEventListener('install', event => {
           '/css/responsive.css',
           '/index.html',
           '/restaurant.html',
-          '/js/main.js',
-          '/js/restaurant_info.js',
+          'js/main.js',
+          'js/restaurant_info.js',
           '/registerSW.js',
           '/sw.js',
           'js/idb.js',
@@ -118,7 +118,17 @@ self.addEventListener('install', event => {
           'https://unpkg.com/leaflet@1.3.1/dist/images/marker-icon.png',
           'https://unpkg.com/leaflet@1.3.1/dist/images/marker-icon-2x.png',
           'https://api.tiles.mapbox.com/v4/mapbox.streets/13/2413/3080.jpg70?access_token=pk.eyJ1IjoiY2RhdmlzNCIsImEiOiJjamxpOHVvNnIwYjJnM3ByMjFwcW9jdjk5In0.WrX96W6zbl7Vo3Y8A2Vvfw',
-          '/img/icon.png'
+          '/restaurant.html?id=1',
+          '/restaurant.html?id=2',
+          '/restaurant.html?id=3',
+          '/restaurant.html?id=4',
+          '/restaurant.html?id=5',
+          '/restaurant.html?id=6',
+          '/restaurant.html?id=7',
+          '/restaurant.html?id=8',
+          '/restaurant.html?id=9',
+          '/restaurant.html?id=10',
+          '/img/icon.png',
         ]).catch(error => {
           console.log('Caches open failed: ' + error);
         });
@@ -217,7 +227,7 @@ self.addEventListener('fetch', event => {
   const requestUrl = new URL(request.url);
   
   // 1. filter Ajax Requests
-  if (event.request.url.endsWith('/restaurants')) {
+  if ((requestUrl.hostname === 'restaurantsserver.herokuapp.com')&& (event.request.url.endsWith('/restaurants'))) {
     event.respondWith(idbResponse(request));
   }
   if (request.method === 'PUT') {
@@ -227,7 +237,7 @@ self.addEventListener('fetch', event => {
     idbKeyVal.clear();
     }
   }
-  if (request.url.includes('/reviews/')) {
+  if ((requestUrl.hostname === 'restaurantsserver.herokuapp.com') && (request.url.includes('/reviews/'))) {
     searchURL = new URL(requestUrl);
     var restaurantID = searchURL.searchParams.get("restaurant_id");
     event.respondWith(idbReviewResponse(restaurantID,request));
@@ -238,6 +248,9 @@ self.addEventListener('fetch', event => {
      {
       idbReviewKeyVal.clear();
       }
+  }
+  if(requestUrl.hostname !== 'restaurantsserver.herokuapp.com') {
+    event.respondWith(cacheResponse(request));
   }
 });
 
