@@ -109,6 +109,11 @@ h1 {
   width: 100%;
   background-color: #ccc;
 }
+div.leaflet-control-attribution.leaflet-control a{
+  color: #01447e;
+  background-color: #ccc;
+}
+
 /* ====================== Restaurant Filtering ====================== */
 .filter-options {
   width: 100%;
@@ -152,6 +157,7 @@ h1 {
   color: #E76E3C;
   content: attr(data-tooltip);
 }
+
 
 #restaurants-list {
   background-color: #f1f1f1;
