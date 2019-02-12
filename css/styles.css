@@ -139,8 +139,7 @@ h1 {
 /* ====================== Restaurant Listing ====================== */
 
 .favorite-star-character{
-  color: #ccd6dd;
-  outline-color: #333;
+  color: #333;
   cursor: pointer;
   align-self: flex-end;
   margin-bottom: 2em;
