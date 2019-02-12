@@ -109,9 +109,8 @@ h1 {
   width: 100%;
   background-color: #ccc;
 }
-div.leaflet-control-attribution.leaflet-control a{
-  color: #01447e;
-  background-color: #ccc;
+div.leaflet-control-attribution.leaflet-control{
+ visibility: hidden;
 }
 
 /* ====================== Restaurant Filtering ====================== */
