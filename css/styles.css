@@ -148,7 +148,7 @@ h1 {
   color:#ffac33;
 }
 .favorite-star-character:hover{
-  color: yellow;
+  color: #939393;
   content: attr(data-tooltip);
 }
 
@@ -171,7 +171,7 @@ h1 {
 }
 
 #restaurants-list .restaurant-img {
-  background-color: rgb(253, 253, 253);
+  background-color: rgb(255, 255, 255);
   display: block;
   margin-top: 10px;
   max-width: 100%;
