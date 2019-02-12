@@ -140,6 +140,7 @@ h1 {
 
 .favorite-star-character{
   color: #ccd6dd;
+  outline-color: #333;
   cursor: pointer;
   align-self: flex-end;
   margin-bottom: 2em;
