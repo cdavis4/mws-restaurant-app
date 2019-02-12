@@ -2,8 +2,10 @@
 @media screen and (max-width: 549px) {
   #map {
     height: 200px;
-    width: 100%;
     background-color: #ccc;
+  }
+  .inside #map{
+    width:85%;
   }
   .inside td{
     display: block;
@@ -32,10 +34,6 @@
     order: 0;
   
   }
-  .inside #map-container {
-    flex:auto;
-    order:1;
-   }
     #restaurants-list{
       display: flex;
       justify-content: space-evenly;

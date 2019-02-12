@@ -227,7 +227,7 @@ self.addEventListener('fetch', event => {
   const requestUrl = new URL(request.url);
   
   // 1. filter Ajax Requests
-  if ((requestUrl.port === '1337')&& (event.request.url.endsWith('/restaurants'))) {
+  if (event.request.url.endsWith('/restaurants')) {
     event.respondWith(idbResponse(request));
   }
   if (request.method === 'PUT') {
@@ -237,7 +237,7 @@ self.addEventListener('fetch', event => {
     idbKeyVal.clear();
     }
   }
-  if ((requestUrl.port === '1337') && (request.url.includes('/reviews/'))) {
+  if (request.url.includes('/reviews/')) {
     searchURL = new URL(requestUrl);
     var restaurantID = searchURL.searchParams.get("restaurant_id");
     event.respondWith(idbReviewResponse(restaurantID,request));
@@ -248,9 +248,6 @@ self.addEventListener('fetch', event => {
      {
       idbReviewKeyVal.clear();
       }
-  }
-  if(requestUrl.port !== '1337') {
-    event.respondWith(cacheResponse(request));
   }
 });
 

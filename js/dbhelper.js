@@ -8,16 +8,16 @@ class DBHelper {
    * Change this to restaurants.json file location on your server.
    */
   static get DATABASE_URL() {
-    const port = 1337 // Change this to your server port
-    return `http://localhost:${port}/restaurants`;
+  
+    return `https://restaurantsserver.herokuapp.com/restaurants`;
   }
   /**
    * Database URL.
    * Change this to restaurants.json file location on your server.
    */
   static get REVIEWS_URL() {
-    const port = 1337 // Change this to your server port
-    return `http://localhost:${port}/reviews`;
+ 
+    return `https://restaurantsserver.herokuapp.com/reviews`;
   }
 /**
    * Fetch all reviews.
@@ -100,115 +100,8 @@ class DBHelper {
       }
     });
   }
-  
-  //static fetchReviewsById(id, callback) {
-    // fetch all restaurants with proper error handling.
-    
-   // DBHelper.fetchReviews((error, reviews) => {
-    //  if (error) {
-    //    callback(error, null);
-    //  } else {
-    //    const reviews = reviews.find(r => r.restaurant_id == id);
-    //    console.log(reviews);
-    
-  //  fetch(DBHelper.REVIEWS_URL + `/?restaurant_id=${id}`)
-  //  .then(response => response.json())
-  //  .then(data => {
-  //    const reviews = response.json();
-  //    callback(null,reviews);
-  //  })
-  //  .then(data => callback(null, reviews))
-  
-  //  .catch(error => {
-   //   callback(error,null);
-  //  });
- // }
-/**
-  static fetchReviewsById(id,callback) {
-    //fetch(DBHelper.REVIEWS_URL)
-    fetch(DBHelper.REVIEWS_URL + `/?restaurant_id=${id}`)
-     .then(response => {
-       if(!response.ok){
-         throw Error(`Request failed. Returned status of ${response.statusText}`);
-       }
-     const reviews_response = response.json();
-       return reviews_response;
-     //console.log(reviews);
-     // const review= reviews.find(reviews => reviews.restaurant_id == id);
-       //console.log(review);
-     //callback(null,reviews_response);
-     })
-     .then(reviews => {
-       //callback(null, reviews),
-       console.log(reviews);
-       return reviews;
-      // const reviews = reviews;
-       //return reviews;
-      callback(null,reviews);
-     })
-   
-     .catch(error => {
-       callback(error,null);
-     });
-   } 
-   */
-/**
-static dbPromise(){
-  return idb.open('restaurant_reviews', 2, upgradeDB => {
-    switch(upgradeDB.oldVersion){
-      case 0:
-      upgradeDB.createObjectStore('restaurants',{
-        keyPath: 'id'
-      });
-      case 1:
-      const store = updgradeDb.createObjectStore('reviews', {
-        keyPath: 'id'
-      });
-      store.createIndex('restaurant', 'restaurant_id');
-    }
-  });
-}
 
- /**
-static fetchReviewsById(id,callback) {
-  return fetch(DBHelper.REVIEWS_URL + `/?restaurant_id=${id}`)
-  .then(response => response.json())
-  .then(reviews => {
-    this.dbPromise()
-    //idb.open('restaurant_reviews', upgradeDB => {
-      // Note: we don't use 'break' in this switch statement,
-      // the fall-through behaviour is what we want.
-    //      const store = upgradeDB.createObjectStore('reviews', {keyPath: 'id'});
-    //      store.createIndex('restaurant','restaurant_id');
-      //  })
-      .then(db => {
-      if (!db) return;
-      let tx = db.transaction('reviews', 'readwrite');
-      const store = tx.objectStore('reviews');
-      if(Array.isArray(reviews)) {
-        reviews.forEach(function(review){
-          store.put(review);
-        });
-      } else{
-        store.put(reviews);
-      }
-    });
-  callback(null,reviews),
-  console.log('restaurant reviews are: ', reviews);
-  return Promise.resolve(reviews);
-  })
-  //.catch(error => callback(error, null));
-  .catch(error => {
-    return this.dbPromise().then(function(db){
-      if(!db) return;
-      const store = db.transaction('reviews').objectStore('reviews');
-      const indexId = store.index('restaurant');
-      return indexId.getAll(id);
-    });
-  });
-  }
-  */
-    /**
+  /**
    * Fetch a review by its ID.
    */
 static fetchReviewsById(id, callback) {
@@ -219,17 +112,7 @@ static fetchReviewsById(id, callback) {
     .catch(error => callback(error, null));
 }
 
-//static dbPromise() {
- // return idb.open('restaurant_reviews', 2, upgradeDB => {
-  // Note: we don't use 'break' in this switch statement,
-  // the fall-through behaviour is what we want.
-//  switch (upgradeDB.oldVersion) {
-//    case 0:
- //     const store = upgradeDB.createObjectStore('reviews', {keyPath: 'id'});
- //     store.createIndex('restaurant','restaurant_id');
- //   }
-//  });
-//}
+
   /**
    * Fetch restaurants by a cuisine type with proper error handling.
    */
@@ -401,16 +284,7 @@ static fetchReviewsById(id, callback) {
       marker.addTo(newMap);
     return marker;
   } 
-  /* static mapMarkerForRestaurant(restaurant, map) {
-    const marker = new google.maps.Marker({
-      position: restaurant.latlng,
-      title: restaurant.name,
-      url: DBHelper.urlForRestaurant(restaurant),
-      map: map,
-      animation: google.maps.Animation.DROP}
-    );
-    return marker;
-  } */
+
 
 }
 

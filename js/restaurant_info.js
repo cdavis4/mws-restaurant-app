@@ -74,22 +74,6 @@ initMap = () => {
   });
 }  
 
-/* window.initMap = () => {
-  fetchRestaurantFromURL((error, restaurant) => {
-    if (error) { // Got an error!
-      console.error(error);
-    } else {
-      self.map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 16,
-        center: restaurant.latlng,
-        scrollwheel: false
-      });
-      fillBreadcrumb();
-      DBHelper.mapMarkerForRestaurant(self.restaurant, self.map);
-    }
-  });
-} */
-
 /**
  * Get current restaurant from page URL.
  */
@@ -140,7 +124,7 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
 image.alt = "photo from restaurant " + restaurant.name;
 
 image.srcset = "/img/"+ restaurant.id + "-300_1x.jpg 400w, /img/" 
-+restaurant.id + "-600_1x.jpg 1000w, /img/" + restaurant.id  + "-600_2x.jpg 4000w";
++restaurant.id + "-600_1x.jpg 1000w";
  
   const cuisine = document.getElementById('restaurant-cuisine');
   cuisine.innerHTML = restaurant.cuisine_type;
@@ -152,17 +136,6 @@ image.srcset = "/img/"+ restaurant.id + "-300_1x.jpg 400w, /img/"
   // fill reviews
   DBHelper.fetchReviewsById(restaurant.id,fillReviewsHTML);
 }
-  //DBHelper.fetchReviewsById(restaurant.id, (error, reviews) => {
- // self.restaurant.reviews = reviews;
-  //console.log(reviews);
-  // if (!reviews) {
-  //    console.error(error);
-  //    return;
-   // }
-   //fillReviewsHTML();
- // callback(null, reviews);
-// });
-//}
 
 /**
  * Create restaurant operating hours HTML table and add it to the webpage.
@@ -269,7 +242,6 @@ createOfflineHTML = (id)=> {
 
   const date = document.createElement('p');
   var date_local = new Date(json.createdAt);
-  //date_local.setUTCSeconds(review.createdAt); 
   date.innerHTML = date_local.toLocaleDateString();
   li.appendChild(date);
 
@@ -330,11 +302,10 @@ createReviewModal = (restaurant) =>{
     let reload = function() {
       const url = self.location;
       window.location.replace(url);
-      //window.location.reload(true);
       }
     if (navigator.onLine)
       {
-        setTimeout(reload, 1000);
+        setTimeout(reload, 10);
       }
   });
 }

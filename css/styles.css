@@ -17,7 +17,7 @@ ul, li {
 	color: #333;
 }
 button, a {
-	color: #046b99;
+	color: #0275d8;
 	text-decoration: none;
 }
 a:hover, a:focus {
@@ -221,7 +221,6 @@ h1 {
 }
 .inside #map {
   background-color: #ccc;
-  width: 90%;
   z-index: 0; /* Sit behind modal if open https://github.com/Leaflet/Leaflet/issues/3690*/
 }
 
@@ -234,7 +233,7 @@ h1 {
   line-height: 1.1;
 }
 #restaurant-img {
-  width: 90%;
+  width: 100%;
 }
 #restaurant-address {
   font-size: 1em;
@@ -247,7 +246,6 @@ h1 {
   letter-spacing: 10px;
   text-align: center;
   text-transform: uppercase;
-  width: 90%;
 
 }
 #restaurant-container, #reviews-container {
@@ -290,7 +288,6 @@ padding: 25px;
   overflow: hidden;
   padding: 0 20px 20px;
   position: relative;
-  width: 85%;
 }
 #reviews-list li p {
   margin: 0 0 10px;
@@ -367,7 +364,6 @@ padding: 25px;
   letter-spacing: 0;
   margin: 10px;
   padding: 0 10px;
-  width: 80%;
   padding: 12px;
   border: 1px solid black;
   border-radius: 4px;
