@@ -109,7 +109,7 @@ h1 {
   width: 100%;
   background-color: #ccc;
 }
-div.leaflet-control-attribution.leaflet-control{
+div.leaflet-control-attribution.leaflet-control {
  visibility: hidden;
 }
 
@@ -150,7 +150,7 @@ div.leaflet-control-attribution.leaflet-control{
   font-size: 48px;
 }
 .favorite-star-character.active{
-  color:#ffac33;
+  color:#E76E3C;
 }
 .favorite-star-character:hover{
   color: #E76E3C;
