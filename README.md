@@ -1,32 +1,62 @@
-# Mobile Web Specialist Certification Course
+# Mobile Web Specialist Certification Course Project
 ---
 #### _Three Stage Course Material Project - Restaurant Reviews_
 
-## Project Overview: Stage 1
+Goal is to learn by converting static webpage to fully responsive, accessible mobile ready web application.
 
-For the **Restaurant Reviews** projects, you will incrementally convert a static webpage to a mobile-ready web application. In **Stage One**, you will take a static design that lacks accessibility and convert the design to be responsive on different sized displays and accessible for screen reader use. You will also add a service worker to begin the process of creating a seamless offline experience for your users.
+## Restaurants Reviews App: Stage 1
 
-### Specification
+For the **Restaurant Reviews** projects, incrementally convert a static webpage to a mobile-ready web application. In **Stage One**, take a static design that lacks accessibility and convert the design to be responsive on different sized displays and accessible for screen reader use. Add a service worker to begin the process of creating a seamless offline experience for users.
 
-You have been provided the code for a restaurant reviews website. The code has a lot of issues. It’s barely usable on a desktop browser, much less a mobile device. It also doesn’t include any standard accessibility features, and it doesn’t work offline at all. Your job is to update the code to resolve these issues while still maintaining the included functionality. 
+### Requirements Completed
 
-### What do I do from here?
+**Make the provided site fully responsive** All of the page elements should be usable and visible in any viewport, including desktop, tablet, and mobile displays. Images shouldn't overlap, and page elements should wrap when the viewport is too small to display them side by side.
 
-1. In this folder, start up a simple HTTP server to serve up the site files on your local computer. Python has some simple tools to do this, and you don't even need to know Python. For most people, it's already installed on your computer. 
+**Make the site accessible** 
+Ensure that <kbd>alt</kbd> attributes are present and descriptive for images. Add screen-reader-only attributes when appropriate to add useful supplementary text. Use semantic markup where possible, and aria attributes when semantic markup is not feasible.
 
-In a terminal, check the version of Python you have: `python -V`. If you have Python 2.x, spin up the server with `python -m SimpleHTTPServer 8000` (or some other port, if port 8000 is already in use.) For Python 3.x, you can use `python3 -m http.server 8000`. If you don't have Python installed, navigate to Python's [website](https://www.python.org/) to download and install the software.
-
-2. With your server running, visit the site: `http://localhost:8000`, and look around for a bit to see what the current experience looks like.
-3. Explore the provided code, and start making a plan to implement the required features in three areas: responsive design, accessibility and offline use.
-4. Write code to implement the updates to get this site on its way to being a mobile-ready website.
-
-## Leaflet.js and Mapbox:
-
-This repository uses [leafletjs](https://leafletjs.com/) with [Mapbox](https://www.mapbox.com/). You need to replace `<your MAPBOX API KEY HERE>` with a token from [Mapbox](https://www.mapbox.com/). Mapbox is free to use, and does not require any payment information. 
-
-### Note about ES6
-
-Most of the code in this project has been written to the ES6 JavaScript specification for compatibility with modern web browsers and future proofing JavaScript code. As much as possible, try to maintain use of ES6 in any additional JavaScript you write. 
+**Cache the static site for offline use.** Using Cache API and a ServiceWorker, cache the data for the website so that any page (including images) that has been visited is accessible offline.
 
 
+## Restaurants Reviews App: Stage 2
+
+In **Stage Two**, take the responsive, accessible design you built in **Stage One** and connect it to an external server. Use asynchronous JavaScript to request JSON data from the server. Store data received from the server in an offline database using IndexedDB, to create an app shell architecture. Finally, optimize site to meet performance benchmarks, tested using [Lighthouse](https://developers.google.com/web/tools/lighthouse/).
+
+### Requirements Completed
+
+**Use server data instead of local memory** In the first version of the application, all of the data for the restaurants was stored in the local application. Change this behavior so that data comes from the server instead, and using the response data to generate the restaurant information on the main page and the detail page.
+
+**Use IndexedDB to cache JSON responses** In order to maintain offline use with the development server update the service worker to store the JSON received by your requests using the IndexedDB API. As with Stage One, any page that has been visited by the user should be available offline, with data pulled from the shell database.
+
+**Meet performance requirements** Once you have your app working with the server and working in offline mode, measure your site performance using [Lighthouse](https://developers.google.com/web/tools/lighthouse/).
+
+Audits | Score
+------------- | -------------
+Progressive Web App | >= 90
+Performance  | >= 70
+Accessibility | >- 90
+
+## Restaurants Reviews App: Stage 3
+
+In **Stage Three**, using the connected application you built in **Stage One** and **Stage Two** and add additional functionality. Add a form to allow users to create their own reviews. If the app is offline, the form will defer updating to the remote database until a connection is established. Then, optimize your site to meet even stricter performance benchmarks than the previous project.
+
+### Requirements Completed
+
+**Add a form to allow users to create their own reviews:** Add a form that adds new reviews to the database. The form should include the user’s name, the restaurant id, the user’s rating, and whatever comments they have. Submitting the form should update the server when the user is online.
+
+**Add functionality to defer updates until the user is connected:** If the user is not online, the app should notify the user that they are not connected, and save the users' data to submit automatically when re-connected. In this case, the review should be deferred and sent to the server when connection is re-established.
+
+**Meet the new performance requirements:** In addition to adding new features, the performance targets you met in Stage Two have tightened. Using Lighthouse, you’ll need to measure your site performance against the new targets.
+
+Audits | Score
+------------- | -------------
+Progressive Web App | >= 90
+Performance  | >= 90
+Accessibility | >- 90
+
+[Final Lighthouse Score](https://googlechrome.github.io/lighthouse/viewer/?gist=67bb7c822fa2fd26ba5c1d78d05a34cf)
+
+[Certificate of Completion](https://confirm.udacity.com/DUZXESVQ)
+
+[Restaurant Review App Link](https://restaurantsmwp.netlify.com/)
 
