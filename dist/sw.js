@@ -252,8 +252,8 @@ self.addEventListener('fetch', event => {
       idbReviewKeyVal.clear();
       }
   }
-  //if(requestUrl.hostname !== 'restaurantsserver.herokuapp.com') {
-  //  event.respondWith(cacheResponse(request));
-  //}
+  if(requestUrl.hostname !== 'restaurantsserver.herokuapp.com') {
+    event.respondWith(cacheResponse(request));
+  }
 });
 
