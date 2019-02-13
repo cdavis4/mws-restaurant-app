@@ -13,7 +13,6 @@ body {
 }
 ul, li {
 	font-family: Arial, Helvetica, sans-serif;
-	font-size: 10pt;
 	color: #333;
 }
 button, a {
@@ -156,7 +155,6 @@ div.leaflet-control-attribution.leaflet-control {
   color: #E76E3C;
   content: attr(data-tooltip);
 }
-
 
 #restaurants-list {
   background-color: #f1f1f1;
