@@ -210,7 +210,7 @@ self.addEventListener('activate', event => {
     caches.keys().then(cacheNames => {
       return Promise.all(
         cacheNames.filter(cacheName => {
-          return cacheName.startsWith('restaurant-static') && cacheName !== staticCacheName;
+          return cacheName.startsWith('restaurant-static');
         }).map(cacheName => {
           return caches.delete(cacheName);
         })
