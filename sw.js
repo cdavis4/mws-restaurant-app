@@ -249,5 +249,8 @@ self.addEventListener('fetch', event => {
       idbReviewKeyVal.clear();
       }
   }
+   if(requestUrl.origin === location.origin) {
+    event.respondWith(cacheResponse(request));
+  }
 });
 
