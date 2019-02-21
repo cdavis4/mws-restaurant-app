@@ -231,7 +231,6 @@ createReviewHTML = (review) => {
 createOfflineHTML = (id)=> {
   li.setAttribute("class","offline");
   let li = document.getElementsByClassName("offline");
-  let id =  '1';
   let obj = localStorage.getItem(id);
   if(obj.restaurant_id === id)
   {
