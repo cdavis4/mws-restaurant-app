@@ -54,10 +54,12 @@ gulp.task('pages', function() {
 gulp.task('copy', function () {
   gulp.src('./js/*.js')
       .pipe(gulp.dest('./dist/js'));
-  gulp.src('./*.js')
+  gulp.src(['./*.js','!./gulp.js'])
       .pipe(gulp.dest('./dist/'));
   gulp.src('./manifest.json')
       .pipe(gulp.dest('./dist/'));
+  gulp.src('./img/*')
+      .pipe(gulp.dest('./dist/img'));
 });
 
 // Clean output directory
