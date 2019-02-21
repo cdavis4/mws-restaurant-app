@@ -57,7 +57,7 @@ gulp.task('copy', function () {
   gulp.src('./*.js')
       .pipe(gulp.dest('./dist/'));
   gulp.src('./manifest.json')
-      .pipe(gulp.dest('./dist/manifest.json'));
+      .pipe(gulp.dest('./dist/'));
 });
 
 // Clean output directory
