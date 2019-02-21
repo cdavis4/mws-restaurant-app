@@ -51,6 +51,15 @@ gulp.task('pages', function() {
     .pipe(gulp.dest('./dist'));
 });
 
+gulp.task('copy', function () {
+  gulp.src('./js/*.js')
+      .pipe(gulp.dest('./dist/js'));
+  gulp.src('./*.js')
+      .pipe(gulp.dest('./dist/'));
+  gulp.src('./manifest.json')
+      .pipe(gulp.dest('./dist/manifest.json'));
+});
+
 // Clean output directory
 gulp.task('clean', () => del(['dist']));
 
@@ -58,6 +67,7 @@ gulp.task('clean', () => del(['dist']));
 gulp.task('default', ['clean'], function () {
   runSequence(
     'styles',
-    'pages'
+    'pages',
+    'copy'
   );
 });
